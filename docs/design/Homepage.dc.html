@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Oswald:wght@400;500;600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#2b2926;font-family:'Libre Caslon Text',Georgia,serif;color:#1a1a1a}
+  a{color:inherit;text-decoration:none}
+  a:hover{opacity:.7}
+  .dv-turn{padding:56px 48px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .dv-thd{display:flex;align-items:baseline;gap:12px;margin:0 0 28px;color:#f4ecd8}
+  .dv-tid{font:600 10px 'JetBrains Mono',monospace;padding:4px 8px;background:#f4ecd8;color:#0f1e3d;border-radius:3px}
+  .dv-tname{font:500 13px/1.2 'JetBrains Mono',monospace;letter-spacing:.08em;color:#f4ecd8;text-transform:uppercase}
+  .dv-opts{display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start}
+  .dv-opt{flex:none;display:flex;flex-direction:column;gap:12px}
+  .dv-oid{font:600 11px 'JetBrains Mono',monospace;padding:4px 8px;background:rgba(244,236,216,.15);color:#f4ecd8;border-radius:3px}
+  .dv-olabel{display:flex;align-items:center;gap:10px;font:400 12px/1.3 'JetBrains Mono',monospace;color:rgba(244,236,216,.7);text-transform:uppercase;letter-spacing:.08em}
+  .dv-card{background:#f4ecd8;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+  .dv-next{margin:32px 0 0;font:12px/1.5 'JetBrains Mono',monospace;color:rgba(244,236,216,.5)}
+  .dv-next a{color:#f4ecd8;text-decoration:underline}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t1">
+  <div class="dv-thd">
+    <span class="dv-tid">1</span>
+    <span class="dv-tname">Homepage — 2 variações sutis · Wonner</span>
+  </div>
+
+  <div class="dv-opts">
+
+    <!-- ========= OPTION 1A ========= -->
+    <div class="dv-opt" id="1a">
+      <div class="dv-olabel"><span class="dv-oid">1a</span>Hero editorial full-bleed · navy dominante</div>
+      <div class="dv-card" style="width:1440px;font-family:'Libre Caslon Text',Georgia,serif;color:#1a1a1a">
+
+        <!-- Announcement bar -->
+        <div style="background:#0f1e3d;color:#f4ecd8;padding:9px 40px;display:flex;justify-content:space-between;align-items:center;font:500 11px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase">
+          <span>Drop 03 · Fall Rivalry — encerra em 04d 12h 38m</span>
+          <span style="display:flex;gap:24px"><span>PT / EN</span><span>Envio grátis · pedidos +R$ 349</span></span>
+        </div>
+
+        <!-- Nav -->
+        <nav style="background:#0f1e3d;color:#f4ecd8;padding:22px 40px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;border-bottom:1px solid rgba(244,236,216,.12)">
+          <div style="display:flex;gap:32px;font:600 12px 'Oswald',sans-serif;letter-spacing:.18em;text-transform:uppercase">
+            <a>Loja</a><a>Drops</a><a>Lookbook</a><a>Sobre</a>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;justify-self:center">
+            <!-- Wordmark WONNER with mini mascot -->
+            <svg width="32" height="29" viewBox="0 0 96 88" aria-label="Wonner">
+              <path fill="#f4ecd8" fill-rule="evenodd" d="M7 4 L30 4 L30 13 L24 13 L38 30 L41.5 21.5 L46 23.2 L50.5 21.5 L54 30 L72 13 L66 13 L66 4 L89 4 L89 13 L66 33 L66 74 L48 84 L30 74 L30 33 L7 13 Z M47.5 38.5 L55 43.5 L56 65 L47 75 L40 66.5 L39.7 45.5 Z M42.9 25.6 L44.1 25.6 L44.1 28.6 L42.9 28.6 Z M48 25.6 L49.2 25.6 L49.2 28.6 L48 28.6 Z"/>
+            </svg>
+            <span style="font:900 26px 'Cinzel',serif;letter-spacing:.28em">WONNER</span>
+          </div>
+          <div style="display:flex;gap:22px;justify-self:end;font:600 12px 'Oswald',sans-serif;letter-spacing:.18em;text-transform:uppercase;align-items:center">
+            <a>Buscar</a><a>Conta</a><a>Sacola (2)</a>
+          </div>
+        </nav>
+
+        <!-- Hero -->
+        <div style="position:relative;height:720px;background:repeating-linear-gradient(135deg,#132546 0 12px,#0f1e3d 12px 24px);overflow:hidden">
+          <!-- placeholder image -->
+          <div style="position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(244,236,216,.05) 0 20px,transparent 20px 40px);display:flex;align-items:center;justify-content:center">
+            <span style="font:500 11px 'JetBrains Mono',monospace;color:rgba(244,236,216,.35);letter-spacing:.2em;text-transform:uppercase">[ hero editorial · modelo com varsity jacket wonner · 1440×720 ]</span>
+          </div>
+
+          <!-- collegiate arch label -->
+          <div style="position:absolute;top:56px;left:50%;transform:translateX(-50%);text-align:center;color:#f4ecd8">
+            <div style="font:600 11px 'JetBrains Mono',monospace;letter-spacing:.4em;opacity:.7">EST · MMXXV · SÃO PAULO</div>
+          </div>
+
+          <!-- big display -->
+          <div style="position:absolute;left:56px;bottom:80px;color:#f4ecd8;max-width:900px">
+            <div style="font:500 13px 'JetBrains Mono',monospace;letter-spacing:.3em;opacity:.8;margin-bottom:24px">DROP 03 / FALL RIVALRY / 2026</div>
+            <h1 style="font:900 148px/.86 'Cinzel',serif;letter-spacing:-.01em;margin:0;text-wrap:balance">WON<br>BY YOUR<br><em style="font-style:italic;font-weight:700;font-family:'Libre Caslon Text',serif">own.</em></h1>
+            <div style="display:flex;gap:16px;margin-top:40px">
+              <a style="background:#f4ecd8;color:#0f1e3d;padding:18px 32px;font:700 13px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;display:inline-block">Comprar o drop →</a>
+              <a style="border:1.5px solid #f4ecd8;color:#f4ecd8;padding:18px 32px;font:700 13px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;display:inline-block">Ver lookbook</a>
+            </div>
+          </div>
+
+          <!-- side spec -->
+          <div style="position:absolute;right:40px;top:50%;transform:translateY(-50%) rotate(90deg);transform-origin:right center;color:rgba(244,236,216,.5);font:500 11px 'JetBrains Mono',monospace;letter-spacing:.4em">№ 003 — 24 PEÇAS · EDIÇÃO LIMITADA</div>
+        </div>
+
+        <!-- Marquee band -->
+        <div style="background:#f4ecd8;border-top:1px solid #0f1e3d;border-bottom:1px solid #0f1e3d;padding:20px 0;overflow:hidden;white-space:nowrap;font:900 22px 'Cinzel',serif;letter-spacing:.18em;color:#0f1e3d">
+          WON BY YOUR OWN ★ WON BY YOUR OWN ★ WON BY YOUR OWN ★ WON BY YOUR OWN ★ WON BY YOUR OWN ★
+        </div>
+
+        <!-- Category tiles -->
+        <div style="background:#f4ecd8;padding:80px 40px 60px">
+          <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:40px;border-bottom:1px solid #0f1e3d;padding-bottom:20px">
+            <div>
+              <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.3em;color:#0f1e3d;margin-bottom:8px">01 — CATEGORIAS</div>
+              <h2 style="font:900 56px/.9 'Cinzel',serif;margin:0;color:#0f1e3d">Escolha seu campo.</h2>
+            </div>
+            <a style="font:700 12px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#0f1e3d;border-bottom:1.5px solid #0f1e3d;padding-bottom:2px">Ver tudo →</a>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;height:520px">
+            <div style="background:#0f1e3d;color:#f4ecd8;padding:32px;position:relative;display:flex;flex-direction:column;justify-content:space-between">
+              <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.3em;opacity:.7">01</div>
+              <div style="flex:1;margin:20px 0;background:repeating-linear-gradient(45deg,rgba(244,236,216,.06) 0 16px,transparent 16px 32px);display:flex;align-items:center;justify-content:center">
+                <span style="font:500 10px 'JetBrains Mono',monospace;color:rgba(244,236,216,.4);letter-spacing:.2em;text-transform:uppercase">[ hoodie flat lay ]</span>
+              </div>
+              <div>
+                <h3 style="font:900 64px/.9 'Cinzel',serif;margin:0 0 12px">Moletons</h3>
+                <div style="display:flex;justify-content:space-between;font:600 12px 'Oswald',sans-serif;letter-spacing:.2em;text-transform:uppercase"><span>18 peças</span><span>Ver →</span></div>
+              </div>
+            </div>
+            <div style="background:#e8dcc0;padding:28px;display:flex;flex-direction:column;justify-content:space-between;color:#0f1e3d">
+              <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.3em;opacity:.6">02</div>
+              <div style="flex:1;margin:20px 0;background:repeating-linear-gradient(45deg,rgba(15,30,61,.05) 0 14px,transparent 14px 28px);display:flex;align-items:center;justify-content:center">
+                <span style="font:500 10px 'JetBrains Mono',monospace;color:rgba(15,30,61,.4);letter-spacing:.2em;text-transform:uppercase">[ tee ]</span>
+              </div>
+              <div>
+                <h3 style="font:900 40px/.9 'Cinzel',serif;margin:0 0 8px">Camisetas</h3>
+                <div style="display:flex;justify-content:space-between;font:600 11px 'Oswald',sans-serif;letter-spacing:.2em;text-transform:uppercase"><span>26 peças</span><span>→</span></div>
+              </div>
+            </div>
+            <div style="background:#a63a2a;color:#f4ecd8;padding:28px;display:flex;flex-direction:column;justify-content:space-between">
+              <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.3em;opacity:.7">03</div>
+              <div style="flex:1;margin:20px 0;background:repeating-linear-gradient(45deg,rgba(244,236,216,.08) 0 14px,transparent 14px 28px);display:flex;align-items:center;justify-content:center">
+                <span style="font:500 10px 'JetBrains Mono',monospace;color:rgba(244,236,216,.5);letter-spacing:.2em;text-transform:uppercase">[ cap ]</span>
+              </div>
+              <div>
+                <h3 style="font:900 40px/.9 'Cinzel',serif;margin:0 0 8px">Acessórios</h3>
+                <div style="display:flex;justify-content:space-between;font:600 11px 'Oswald',sans-serif;letter-spacing:.2em;text-transform:uppercase"><span>9 peças</span><span>→</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Featured product row -->
+        <div style="background:#f4ecd8;padding:20px 40px 100px">
+          <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:32px;border-bottom:1px solid #0f1e3d;padding-bottom:20px">
+            <div>
+              <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.3em;color:#0f1e3d;margin-bottom:8px">02 — DROP 03 / DESTAQUES</div>
+              <h2 style="font:900 56px/.9 'Cinzel',serif;margin:0;color:#0f1e3d">Fall Rivalry.</h2>
+            </div>
+            <div style="font:500 12px 'JetBrains Mono',monospace;color:#0f1e3d;text-align:right">04:12:38:04<br><span style="opacity:.5;font-size:10px;letter-spacing:.2em">DIAS:HRS:MIN:SEG</span></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
+            ${['Varsity Jacket "Rivalry"','Hoodie "Own"','Tee "Est. MMXXV"','Boné "W" 6-panel'].map(()=>``).join('')}
+            <!-- static product cards -->
+            <div>
+              <div style="background:#e8dcc0;aspect-ratio:3/4;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background-image:repeating-linear-gradient(45deg,rgba(15,30,61,.04) 0 12px,transparent 12px 24px)">
+                <span style="font:500 10px 'JetBrains Mono',monospace;color:rgba(15,30,61,.4);letter-spacing:.2em;text-transform:uppercase">[ varsity jacket ]</span>
+                <span style="position:absolute;top:12px;left:12px;background:#0f1e3d;color:#f4ecd8;padding:4px 8px;font:600 9px 'JetBrains Mono',monospace;letter-spacing:.2em">NOVO</span>
+              </div>
+              <div style="font:700 15px 'Cinzel',serif;color:#0f1e3d;letter-spacing:.04em">Varsity "Rivalry"</div>
+              <div style="display:flex;justify-content:space-between;margin-top:6px;font:500 12px 'Libre Caslon Text',serif;color:#0f1e3d"><span>Lã · creme/navy</span><span>R$ 899</span></div>
+            </div>
+            <div>
+              <div style="background:#0f1e3d;aspect-ratio:3/4;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background-image:repeating-linear-gradient(45deg,rgba(244,236,216,.05) 0 12px,transparent 12px 24px)">
+                <span style="font:500 10px 'JetBrains Mono',monospace;color:rgba(244,236,216,.4);letter-spacing:.2em;text-transform:uppercase">[ hoodie navy ]</span>
+              </div>
+              <div style="font:700 15px 'Cinzel',serif;color:#0f1e3d;letter-spacing:.04em">Hoodie "Own"</div>
+              <div style="display:flex;justify-content:space-between;margin-top:6px;font:500 12px 'Libre Caslon Text',serif;color:#0f1e3d"><span>Moletom pesado 450g</span><span>R$ 429</span></div>
+            </div>
+            <div>
+              <div style="background:#e8dcc0;aspect-ratio:3/4;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background-image:repeating-linear-gradient(45deg,rgba(15,30,61,.04) 0 12px,transparent 12px 24px)">
+                <span style="font:500 10px 'JetBrains Mono',monospace;color:rgba(15,30,61,.4);letter-spacing:.2em;text-transform:uppercase">[ tee creme ]</span>
+                <span style="position:absolute;top:12px;left:12px;background:#a63a2a;color:#f4ecd8;padding:4px 8px;font:600 9px 'JetBrains Mono',monospace;letter-spacing:.2em">-15%</span>
+              </div>
+              <div style="font:700 15px 'Cinzel',serif;color:#0f1e3d;letter-spacing:.04em">Tee "Est. MMXXV"</div>
+              <div style="display:flex;justify-content:space-between;margin-top:6px;font:500 12px 'Libre Caslon Text',serif;color:#0f1e3d"><span>Algodão 240g</span><span>R$ 189</span></div>
+            </div>
+            <div>
+              <div style="background:#a63a2a;aspect-ratio:3/4;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background-image:repeating-linear-gradient(45deg,rgba(244,236,216,.08) 0 12px,transparent 12px 24px)">
+                <span style="font:500 10px 'JetBrains Mono',monospace;color:rgba(244,236,216,.4);letter-spacing:.2em;text-transform:uppercase">[ boné 6-panel ]</span>
+              </div>
+              <div style="font:700 15px 'Cinzel',serif;color:#0f1e3d;letter-spacing:.04em">Boné "W" 6-panel</div>
+              <div style="display:flex;justify-content:space-between;margin-top:6px;font:500 12px 'Libre Caslon Text',serif;color:#0f1e3d"><span>Sarja lavada</span><span>R$ 159</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Manifesto -->
+        <div style="background:#0f1e3d;color:#f4ecd8;padding:120px 40px;text-align:center;position:relative;overflow:hidden">
+          <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.3em;opacity:.6;margin-bottom:32px">03 — MANIFESTO</div>
+          <p style="font:400 44px/1.15 'Libre Caslon Text',serif;font-style:italic;max-width:1000px;margin:0 auto;text-wrap:balance">
+            "Não vestimos vitória de outro. Cada peça é conquista própria — costurada com identidade, feita pra quem entende que qualidade não se pede emprestada."
+          </p>
+          <div style="margin-top:40px;font:700 12px 'Oswald',sans-serif;letter-spacing:.3em;text-transform:uppercase">— Wonner · Won by your own</div>
+        </div>
+
+        <!-- Footer -->
+        <footer style="background:#f4ecd8;padding:60px 40px 32px;color:#0f1e3d">
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid #0f1e3d">
+            <div>
+              <div style="font:900 32px 'Cinzel',serif;letter-spacing:.24em;margin-bottom:16px">WONNER</div>
+              <p style="font:400 14px/1.5 'Libre Caslon Text',serif;max-width:340px">Peças feitas com propósito, para quem constrói a própria vitória. Drop a drop.</p>
+            </div>
+            <div>
+              <div style="font:700 11px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;margin-bottom:14px">Loja</div>
+              <div style="display:flex;flex-direction:column;gap:8px;font:14px/1.6 'Libre Caslon Text',serif"><a>Camisetas</a><a>Moletons</a><a>Acessórios</a><a>Drops anteriores</a></div>
+            </div>
+            <div>
+              <div style="font:700 11px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;margin-bottom:14px">Ajuda</div>
+              <div style="display:flex;flex-direction:column;gap:8px;font:14px/1.6 'Libre Caslon Text',serif"><a>Trocas & devoluções</a><a>Envio</a><a>Guia de tamanhos</a><a>Contato</a></div>
+            </div>
+            <div>
+              <div style="font:700 11px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;margin-bottom:14px">Newsletter</div>
+              <p style="font:400 13px/1.5 'Libre Caslon Text',serif;margin:0 0 12px">Avisos de drops antes de todo mundo.</p>
+              <div style="display:flex;border-bottom:1px solid #0f1e3d;padding-bottom:6px"><span style="font:400 13px 'Libre Caslon Text',serif;font-style:italic;color:rgba(15,30,61,.5);flex:1">seu@email.com</span><span style="font:700 11px 'Oswald',sans-serif;letter-spacing:.2em">ASSINAR →</span></div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:20px;font:500 11px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#0f1e3d">
+            <span>© MMXXVI Wonner · CNPJ 00.000.000/0001-00</span>
+            <span>Instagram · TikTok · YouTube</span>
+          </div>
+        </footer>
+
+      </div>
+    </div>
+
+    <!-- ========= OPTION 1B ========= -->
+    <div class="dv-opt" id="1b">
+      <div class="dv-olabel"><span class="dv-oid">1b</span>Hero split · creme dominante · nav navy + categorias mescladas</div>
+      <div class="dv-card" style="width:1440px;font-family:'Libre Caslon Text',Georgia,serif;color:#1a1a1a">
+
+        <!-- Announcement bar (navy) -->
+        <div style="background:#0f1e3d;color:#f4ecd8;padding:9px 40px;display:flex;justify-content:space-between;align-items:center;font:500 11px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase">
+          <span>Drop 03 · Fall Rivalry — encerra em 04d 12h 38m</span>
+          <span style="display:flex;gap:24px"><span>PT / EN</span><span>Envio grátis · pedidos +R$ 349</span></span>
+        </div>
+
+        <!-- Nav (navy, compact wordmark) -->
+        <nav style="background:#0f1e3d;color:#f4ecd8;padding:22px 40px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;border-bottom:1px solid rgba(244,236,216,.12)">
+          <div style="display:flex;gap:32px;font:600 12px 'Oswald',sans-serif;letter-spacing:.18em;text-transform:uppercase">
+            <a>Loja</a><a>Drops</a><a>Lookbook</a><a>Sobre</a>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;justify-self:center">
+            <svg width="32" height="29" viewBox="0 0 96 88" aria-label="Wonner">
+              <path fill="#f4ecd8" fill-rule="evenodd" d="M7 4 L30 4 L30 13 L24 13 L38 30 L41.5 21.5 L46 23.2 L50.5 21.5 L54 30 L72 13 L66 13 L66 4 L89 4 L89 13 L66 33 L66 74 L48 84 L30 74 L30 33 L7 13 Z M47.5 38.5 L55 43.5 L56 65 L47 75 L40 66.5 L39.7 45.5 Z M42.9 25.6 L44.1 25.6 L44.1 28.6 L42.9 28.6 Z M48 25.6 L49.2 25.6 L49.2 28.6 L48 28.6 Z"/>
+            </svg>
+            <span style="font:900 26px 'Cinzel',serif;letter-spacing:.28em">WONNER</span>
+          </div>
+          <div style="display:flex;gap:22px;justify-self:end;font:600 12px 'Oswald',sans-serif;letter-spacing:.18em;text-transform:uppercase;align-items:center">
+            <a>Buscar</a><a>Conta</a><a>Sacola (2)</a>
+          </div>
+        </nav>
+
+        <!-- Hero split -->
+        <div style="display:grid;grid-template-columns:1.05fr 1fr;background:#f4ecd8;min-height:680px">
+          <div style="padding:80px 60px;display:flex;flex-direction:column;justify-content:space-between;border-right:1px solid #0f1e3d">
+            <div>
+              <div style="display:inline-flex;align-items:center;gap:10px;font:500 12px 'JetBrains Mono',monospace;letter-spacing:.3em;text-transform:uppercase;color:#0f1e3d">
+                <span style="width:36px;height:1px;background:#0f1e3d"></span> Drop 03 / Fall Rivalry
+              </div>
+              <h1 style="font:900 172px/.82 'Cinzel',serif;letter-spacing:-.02em;margin:24px 0 0;color:#0f1e3d">Won<br>by your<br><em style="font-style:italic;font-weight:700;font-family:'Libre Caslon Text',serif">own.</em></h1>
+            </div>
+            <div>
+              <p style="font:400 20px/1.4 'Libre Caslon Text',serif;max-width:520px;color:#0f1e3d;margin:0 0 32px">24 peças. Uma temporada. A coleção de outono chega inspirada nas rivalidades universitárias americanas — traduzida em algodão pesado, lã e detalhes bordados.</p>
+              <div style="display:flex;gap:12px;align-items:center">
+                <a style="background:#0f1e3d;color:#f4ecd8;padding:20px 36px;font:700 13px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase">Comprar o drop →</a>
+                <a style="color:#0f1e3d;padding:20px 8px;font:700 13px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;border-bottom:1.5px solid #0f1e3d">Ver lookbook</a>
+              </div>
+            </div>
+          </div>
+          <div style="background:#0f1e3d;position:relative;overflow:hidden">
+            <div style="position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(244,236,216,.05) 0 20px,transparent 20px 40px);display:flex;align-items:center;justify-content:center">
+              <span style="font:500 11px 'JetBrains Mono',monospace;color:rgba(244,236,216,.4);letter-spacing:.2em;text-transform:uppercase">[ modelo · varsity jacket rivalry · retrato 3/4 ]</span>
+            </div>
+            <div style="position:absolute;top:32px;right:32px;text-align:right;color:#f4ecd8">
+              <div style="font:900 22px/1 'Cinzel',serif;letter-spacing:.12em">№ 003</div>
+              <div style="font:500 10px 'JetBrains Mono',monospace;opacity:.6;letter-spacing:.2em;margin-top:4px">EDIÇÃO LIMITADA</div>
+            </div>
+            <div style="position:absolute;bottom:32px;left:32px;right:32px;color:#f4ecd8;display:flex;justify-content:space-between;align-items:end">
+              <div>
+                <div style="font:700 14px 'Cinzel',serif;letter-spacing:.08em">Varsity "Rivalry" Wool</div>
+                <div style="font:500 12px 'JetBrains Mono',monospace;opacity:.7;margin-top:4px">R$ 899 · 24 peças no total</div>
+              </div>
+              <div style="border:1px solid #f4ecd8;padding:10px 16px;font:700 11px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase">Ver peça →</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Marquee -->
+        <div style="background:#0f1e3d;color:#f4ecd8;border-top:1px solid #0f1e3d;padding:18px 0;overflow:hidden;white-space:nowrap;font:900 22px 'Cinzel',serif;letter-spacing:.18em">
+          &nbsp;WONNER — WON BY YOUR OWN ✦ EST. MMXXV ✦ WONNER — WON BY YOUR OWN ✦ EST. MMXXV ✦ WONNER — WON BY YOUR OWN ✦
+        </div>
+
+        <!-- Categories (horizontal even) -->
+        <div style="background:#f4ecd8;padding:80px 40px 60px">
+          <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:40px;border-bottom:1px solid #0f1e3d;padding-bottom:20px">
+            <div>
+              <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.3em;color:#0f1e3d;margin-bottom:8px">01 — CATEGORIAS</div>
+              <h2 style="font:900 56px/.9 'Cinzel',serif;margin:0;color:#0f1e3d">Escolha seu campo.</h2>
+            </div>
+            <a style="font:700 12px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#0f1e3d;border-bottom:1.5px solid #0f1e3d;padding-bottom:2px">Ver tudo →</a>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;height:520px">
+            <div style="background:#0f1e3d;color:#f4ecd8;padding:32px;position:relative;display:flex;flex-direction:column;justify-content:space-between">
+              <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.3em;opacity:.7">01</div>
+              <div style="flex:1;margin:20px 0;background:repeating-linear-gradient(45deg,rgba(244,236,216,.06) 0 16px,transparent 16px 32px);display:flex;align-items:center;justify-content:center">
+                <span style="font:500 10px 'JetBrains Mono',monospace;color:rgba(244,236,216,.4);letter-spacing:.2em;text-transform:uppercase">[ hoodie flat lay ]</span>
+              </div>
+              <div>
+                <h3 style="font:900 64px/.9 'Cinzel',serif;margin:0 0 12px">Moletons</h3>
+                <div style="display:flex;justify-content:space-between;font:600 12px 'Oswald',sans-serif;letter-spacing:.2em;text-transform:uppercase"><span>18 peças</span><span>Ver →</span></div>
+              </div>
+            </div>
+            <div style="background:#e8dcc0;padding:28px;display:flex;flex-direction:column;justify-content:space-between;color:#0f1e3d">
+              <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.3em;opacity:.6">02</div>
+              <div style="flex:1;margin:20px 0;background:repeating-linear-gradient(45deg,rgba(15,30,61,.05) 0 14px,transparent 14px 28px);display:flex;align-items:center;justify-content:center">
+                <span style="font:500 10px 'JetBrains Mono',monospace;color:rgba(15,30,61,.4);letter-spacing:.2em;text-transform:uppercase">[ tee ]</span>
+              </div>
+              <div>
+                <h3 style="font:900 40px/.9 'Cinzel',serif;margin:0 0 8px">Camisetas</h3>
+                <div style="display:flex;justify-content:space-between;font:600 11px 'Oswald',sans-serif;letter-spacing:.2em;text-transform:uppercase"><span>26 peças</span><span>→</span></div>
+              </div>
+            </div>
+            <div style="background:#a63a2a;color:#f4ecd8;padding:28px;display:flex;flex-direction:column;justify-content:space-between">
+              <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.3em;opacity:.7">03</div>
+              <div style="flex:1;margin:20px 0;background:repeating-linear-gradient(45deg,rgba(244,236,216,.08) 0 14px,transparent 14px 28px);display:flex;align-items:center;justify-content:center">
+                <span style="font:500 10px 'JetBrains Mono',monospace;color:rgba(244,236,216,.5);letter-spacing:.2em;text-transform:uppercase">[ cap ]</span>
+              </div>
+              <div>
+                <h3 style="font:900 40px/.9 'Cinzel',serif;margin:0 0 8px">Acessórios</h3>
+                <div style="display:flex;justify-content:space-between;font:600 11px 'Oswald',sans-serif;letter-spacing:.2em;text-transform:uppercase"><span>9 peças</span><span>→</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Drop feature -->
+        <div style="background:#f4ecd8;padding:20px 40px 80px">
+          <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:32px;border-bottom:1px solid #0f1e3d;padding-bottom:20px">
+            <div>
+              <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.3em;color:#0f1e3d;margin-bottom:8px">02 — DROP 03 / DESTAQUES</div>
+              <h2 style="font:900 56px/.9 'Cinzel',serif;margin:0;color:#0f1e3d">Fall Rivalry.</h2>
+            </div>
+            <div style="text-align:right">
+              <div style="font:500 10px 'JetBrains Mono',monospace;letter-spacing:.3em;color:#0f1e3d;opacity:.6">ENCERRA EM</div>
+              <div style="font:900 32px 'Cinzel',serif;color:#0f1e3d">04:12:38:04</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
+            <div>
+              <div style="background:#e8dcc0;aspect-ratio:3/4;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background-image:repeating-linear-gradient(45deg,rgba(15,30,61,.04) 0 12px,transparent 12px 24px);border:1px solid #0f1e3d">
+                <span style="font:500 10px 'JetBrains Mono',monospace;color:rgba(15,30,61,.4);letter-spacing:.2em;text-transform:uppercase">[ varsity jacket ]</span>
+                <span style="position:absolute;top:10px;left:10px;background:#0f1e3d;color:#f4ecd8;padding:4px 8px;font:600 9px 'JetBrains Mono',monospace;letter-spacing:.2em">NOVO</span>
+              </div>
+              <div style="font:700 15px 'Cinzel',serif;color:#0f1e3d;letter-spacing:.04em">Varsity "Rivalry"</div>
+              <div style="display:flex;justify-content:space-between;margin-top:6px;font:500 12px 'Libre Caslon Text',serif;color:#0f1e3d"><span>Lã · creme/navy</span><span>R$ 899</span></div>
+            </div>
+            <div>
+              <div style="background:#f4ecd8;border:1px solid #0f1e3d;aspect-ratio:3/4;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background-image:repeating-linear-gradient(45deg,rgba(15,30,61,.04) 0 12px,transparent 12px 24px)">
+                <span style="font:500 10px 'JetBrains Mono',monospace;color:rgba(15,30,61,.4);letter-spacing:.2em;text-transform:uppercase">[ hoodie creme ]</span>
+              </div>
+              <div style="font:700 15px 'Cinzel',serif;color:#0f1e3d;letter-spacing:.04em">Hoodie "Own"</div>
+              <div style="display:flex;justify-content:space-between;margin-top:6px;font:500 12px 'Libre Caslon Text',serif;color:#0f1e3d"><span>Moletom pesado 450g</span><span>R$ 429</span></div>
+            </div>
+            <div>
+              <div style="background:#0f1e3d;aspect-ratio:3/4;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background-image:repeating-linear-gradient(45deg,rgba(244,236,216,.06) 0 12px,transparent 12px 24px)">
+                <span style="font:500 10px 'JetBrains Mono',monospace;color:rgba(244,236,216,.4);letter-spacing:.2em;text-transform:uppercase">[ tee navy ]</span>
+                <span style="position:absolute;top:10px;left:10px;background:#a63a2a;color:#f4ecd8;padding:4px 8px;font:600 9px 'JetBrains Mono',monospace;letter-spacing:.2em">-15%</span>
+              </div>
+              <div style="font:700 15px 'Cinzel',serif;color:#0f1e3d;letter-spacing:.04em">Tee "Est. MMXXV"</div>
+              <div style="display:flex;justify-content:space-between;margin-top:6px;font:500 12px 'Libre Caslon Text',serif;color:#0f1e3d"><span>Algodão 240g</span><span>R$ 189</span></div>
+            </div>
+            <div>
+              <div style="background:#e8dcc0;aspect-ratio:3/4;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background-image:repeating-linear-gradient(45deg,rgba(15,30,61,.04) 0 12px,transparent 12px 24px);border:1px solid #0f1e3d">
+                <span style="font:500 10px 'JetBrains Mono',monospace;color:rgba(15,30,61,.4);letter-spacing:.2em;text-transform:uppercase">[ boné 6-panel ]</span>
+              </div>
+              <div style="font:700 15px 'Cinzel',serif;color:#0f1e3d;letter-spacing:.04em">Boné "W" 6-panel</div>
+              <div style="display:flex;justify-content:space-between;margin-top:6px;font:500 12px 'Libre Caslon Text',serif;color:#0f1e3d"><span>Sarja lavada</span><span>R$ 159</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Manifesto -->
+        <div style="background:#e8dcc0;color:#0f1e3d;padding:120px 40px;position:relative;overflow:hidden;border-top:1px solid #0f1e3d;border-bottom:1px solid #0f1e3d">
+          <div style="max-width:1000px;margin:0 auto">
+            <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.3em;opacity:.6;margin-bottom:32px">03 — MANIFESTO</div>
+            <p style="font:400 46px/1.15 'Libre Caslon Text',serif;font-style:italic;margin:0;text-wrap:balance">
+              "Não vestimos vitória de outro. Cada peça é conquista própria — costurada com identidade, feita pra quem entende que qualidade não se pede emprestada."
+            </p>
+            <div style="margin-top:40px;font:700 12px 'Oswald',sans-serif;letter-spacing:.3em;text-transform:uppercase">— Wonner · Won by your own</div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <footer style="background:#0f1e3d;padding:60px 40px 32px;color:#f4ecd8">
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid rgba(244,236,216,.2)">
+            <div>
+              <div style="font:900 32px 'Cinzel',serif;letter-spacing:.24em;margin-bottom:16px">WONNER</div>
+              <p style="font:400 14px/1.5 'Libre Caslon Text',serif;max-width:340px;opacity:.8">Peças feitas com propósito, para quem constrói a própria vitória. Drop a drop.</p>
+            </div>
+            <div>
+              <div style="font:700 11px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;margin-bottom:14px">Loja</div>
+              <div style="display:flex;flex-direction:column;gap:8px;font:14px/1.6 'Libre Caslon Text',serif;opacity:.8"><a>Camisetas</a><a>Moletons</a><a>Acessórios</a><a>Drops anteriores</a></div>
+            </div>
+            <div>
+              <div style="font:700 11px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;margin-bottom:14px">Ajuda</div>
+              <div style="display:flex;flex-direction:column;gap:8px;font:14px/1.6 'Libre Caslon Text',serif;opacity:.8"><a>Trocas & devoluções</a><a>Envio</a><a>Guia de tamanhos</a><a>Contato</a></div>
+            </div>
+            <div>
+              <div style="font:700 11px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;margin-bottom:14px">Newsletter</div>
+              <p style="font:400 13px/1.5 'Libre Caslon Text',serif;margin:0 0 12px;opacity:.8">Avisos de drops antes de todo mundo.</p>
+              <div style="display:flex;border-bottom:1px solid #f4ecd8;padding-bottom:6px"><span style="font:400 13px 'Libre Caslon Text',serif;font-style:italic;opacity:.5;flex:1">seu@email.com</span><span style="font:700 11px 'Oswald',sans-serif;letter-spacing:.2em">ASSINAR →</span></div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:20px;font:500 11px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;opacity:.6">
+            <span>© MMXXVI Wonner · CNPJ 00.000.000/0001-00</span>
+            <span>Instagram · TikTok · YouTube</span>
+          </div>
+        </footer>
+
+      </div>
+    </div>
+
+  </div>
+
+  <p class="dv-next">Próximo: "seguir com <a href="#1a" class="dv-oid">1a</a>" · "fazer PDP" · "mais uma variação com vermelho tijolo dominante" · "refinar o mascote/logo"</p>
+</section>
+
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Oswald:wght@400;500;600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#2b2926;font-family:'Libre Caslon Text',Georgia,serif;color:#1a1a1a}
+  a{color:inherit;text-decoration:none} a:hover{opacity:.7}
+</style>
+</helmet>
+
+<div style="width:1440px;margin:0 auto;font-family:'Libre Caslon Text',Georgia,serif;color:#1a1a1a;background:#f4ecd8;box-shadow:0 20px 60px rgba(0,0,0,.4)">
+
+  <!-- Announcement -->
+  <div style="background:#0f1e3d;color:#f4ecd8;padding:9px 40px;display:flex;justify-content:space-between;align-items:center;font:500 11px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase">
+    <span>Drop 03 · Fall Rivalry — encerra em 04d 12h 38m</span>
+    <span style="display:flex;gap:24px"><span>PT / EN</span><span>Envio grátis · pedidos +R$ 349</span></span>
+  </div>
+
+  <!-- Nav -->
+  <nav style="background:#0f1e3d;color:#f4ecd8;padding:22px 40px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;border-bottom:1px solid rgba(244,236,216,.12)">
+    <div style="display:flex;gap:32px;font:600 12px 'Oswald',sans-serif;letter-spacing:.18em;text-transform:uppercase">
+      <a>Loja</a><a>Drops</a><a>Lookbook</a><a>Sobre</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;justify-self:center">
+      <svg width="32" height="29" viewBox="0 0 96 88" aria-label="Wonner">
+        <path fill="#f4ecd8" fill-rule="evenodd" d="M7 4 L30 4 L30 13 L24 13 L38 30 L41.5 21.5 L46 23.2 L50.5 21.5 L54 30 L72 13 L66 13 L66 4 L89 4 L89 13 L66 33 L66 74 L48 84 L30 74 L30 33 L7 13 Z M47.5 38.5 L55 43.5 L56 65 L47 75 L40 66.5 L39.7 45.5 Z M42.9 25.6 L44.1 25.6 L44.1 28.6 L42.9 28.6 Z M48 25.6 L49.2 25.6 L49.2 28.6 L48 28.6 Z"/>
+      </svg>
+      <span style="font:900 26px 'Cinzel',serif;letter-spacing:.28em">WONNER</span>
+    </div>
+    <div style="display:flex;gap:22px;justify-self:end;font:600 12px 'Oswald',sans-serif;letter-spacing:.18em;text-transform:uppercase;align-items:center">
+      <a>Buscar</a><a>Conta</a><a>Sacola (2)</a>
+    </div>
+  </nav>
+
+  <!-- Breadcrumb -->
+  <div style="padding:16px 40px;font:500 11px 'JetBrains Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:rgba(15,30,61,.6);border-bottom:1px solid rgba(15,30,61,.15)">
+    <a>Loja</a> / <a>Drop 03</a> / <a>Jaquetas</a> / <span style="color:#0f1e3d">Varsity "Rivalry" Wool</span>
+  </div>
+
+  <!-- Product main -->
+  <div style="display:grid;grid-template-columns:88px 1fr 480px;gap:0;background:#f4ecd8">
+
+    <!-- Thumbnails column -->
+    <div style="padding:32px 12px;display:flex;flex-direction:column;gap:12px;border-right:1px solid rgba(15,30,61,.12)">
+      <div style="aspect-ratio:3/4;background:#e8dcc0;border:1.5px solid #0f1e3d;background-image:repeating-linear-gradient(45deg,rgba(15,30,61,.05) 0 8px,transparent 8px 16px);display:flex;align-items:center;justify-content:center;font:500 8px 'JetBrains Mono',mono;color:rgba(15,30,61,.4);letter-spacing:.2em">01</div>
+      <div style="aspect-ratio:3/4;background:#0f1e3d;background-image:repeating-linear-gradient(45deg,rgba(244,236,216,.06) 0 8px,transparent 8px 16px);display:flex;align-items:center;justify-content:center;font:500 8px 'JetBrains Mono',mono;color:rgba(244,236,216,.5);letter-spacing:.2em">02</div>
+      <div style="aspect-ratio:3/4;background:#e8dcc0;background-image:repeating-linear-gradient(45deg,rgba(15,30,61,.05) 0 8px,transparent 8px 16px);display:flex;align-items:center;justify-content:center;font:500 8px 'JetBrains Mono',mono;color:rgba(15,30,61,.4);letter-spacing:.2em">03</div>
+      <div style="aspect-ratio:3/4;background:#a63a2a;background-image:repeating-linear-gradient(45deg,rgba(244,236,216,.08) 0 8px,transparent 8px 16px);display:flex;align-items:center;justify-content:center;font:500 8px 'JetBrains Mono',mono;color:rgba(244,236,216,.5);letter-spacing:.2em">04</div>
+      <div style="aspect-ratio:3/4;background:#e8dcc0;background-image:repeating-linear-gradient(45deg,rgba(15,30,61,.05) 0 8px,transparent 8px 16px);display:flex;align-items:center;justify-content:center;font:500 8px 'JetBrains Mono',mono;color:rgba(15,30,61,.4);letter-spacing:.2em">05</div>
+      <div style="aspect-ratio:3/4;background:#e8dcc0;background-image:repeating-linear-gradient(45deg,rgba(15,30,61,.05) 0 8px,transparent 8px 16px);display:flex;align-items:center;justify-content:center;font:500 8px 'JetBrains Mono',mono;color:rgba(15,30,61,.4);letter-spacing:.2em">06</div>
+    </div>
+
+    <!-- Main image -->
+    <div style="position:relative;background:#e8dcc0;background-image:repeating-linear-gradient(45deg,rgba(15,30,61,.04) 0 18px,transparent 18px 36px);min-height:920px;border-right:1px solid rgba(15,30,61,.12);display:flex;align-items:center;justify-content:center">
+      <span style="font:500 12px 'JetBrains Mono',monospace;color:rgba(15,30,61,.4);letter-spacing:.24em;text-transform:uppercase">[ produto · modelo vestindo varsity jacket · 872×920 ]</span>
+      <div style="position:absolute;top:24px;left:24px;background:#0f1e3d;color:#f4ecd8;padding:6px 12px;font:600 10px 'JetBrains Mono',monospace;letter-spacing:.24em">DROP 03 · Nº 007/024</div>
+      <div style="position:absolute;bottom:24px;left:24px;right:24px;display:flex;justify-content:space-between;align-items:center;font:500 11px 'JetBrains Mono',monospace;color:rgba(15,30,61,.6);letter-spacing:.2em;text-transform:uppercase">
+        <span>← 01 · 06 →</span>
+        <span>Zoom ⌕</span>
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div style="padding:40px 40px 60px;display:flex;flex-direction:column;gap:28px">
+      <div>
+        <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.3em;text-transform:uppercase;color:#a63a2a;margin-bottom:12px">DROP 03 · Fall Rivalry</div>
+        <h1 style="font:900 52px/.92 'Cinzel',serif;color:#0f1e3d;margin:0 0 8px;letter-spacing:.01em">Varsity "Rivalry" Wool Jacket</h1>
+        <div style="font:400 14px/1.4 'Libre Caslon Text',serif;font-style:italic;color:rgba(15,30,61,.7)">Jaqueta college em lã batida com mangas em couro pull-up e patch W bordado.</div>
+      </div>
+
+      <div style="display:flex;align-items:baseline;gap:16px;padding-bottom:24px;border-bottom:1px solid rgba(15,30,61,.15)">
+        <span style="font:900 44px 'Cinzel',serif;color:#0f1e3d">R$ 899,00</span>
+        <span style="font:500 13px 'JetBrains Mono',monospace;color:rgba(15,30,61,.6)">ou 6× de R$ 149,83</span>
+      </div>
+
+      <!-- Color -->
+      <div>
+        <div style="display:flex;justify-content:space-between;font:600 11px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#0f1e3d;margin-bottom:12px"><span>Cor · Creme/Navy</span><span style="opacity:.5">2 opções</span></div>
+        <div style="display:flex;gap:10px">
+          <div style="width:52px;height:52px;background:#e8dcc0;border:2px solid #0f1e3d;position:relative"><div style="position:absolute;bottom:-16px;left:0;right:0;text-align:center;font:500 9px 'JetBrains Mono',mono;color:#0f1e3d;letter-spacing:.14em">CREME</div></div>
+          <div style="width:52px;height:52px;background:#0f1e3d;border:2px solid transparent;margin-right:4px"></div>
+        </div>
+      </div>
+
+      <!-- Size -->
+      <div style="margin-top:12px">
+        <div style="display:flex;justify-content:space-between;font:600 11px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#0f1e3d;margin-bottom:12px">
+          <span>Tamanho</span>
+          <a style="text-decoration:underline;text-underline-offset:3px">Guia de tamanhos ↗</a>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px">
+          <div style="padding:16px 0;text-align:center;border:1.5px solid rgba(15,30,61,.2);font:600 13px 'Oswald',sans-serif;letter-spacing:.14em;color:rgba(15,30,61,.35);text-decoration:line-through">PP</div>
+          <div style="padding:16px 0;text-align:center;border:1.5px solid #0f1e3d;font:600 13px 'Oswald',sans-serif;letter-spacing:.14em;color:#0f1e3d">P</div>
+          <div style="padding:16px 0;text-align:center;background:#0f1e3d;color:#f4ecd8;font:600 13px 'Oswald',sans-serif;letter-spacing:.14em">M</div>
+          <div style="padding:16px 0;text-align:center;border:1.5px solid #0f1e3d;font:600 13px 'Oswald',sans-serif;letter-spacing:.14em;color:#0f1e3d">G</div>
+          <div style="padding:16px 0;text-align:center;border:1.5px solid #0f1e3d;font:600 13px 'Oswald',sans-serif;letter-spacing:.14em;color:#0f1e3d">GG</div>
+          <div style="padding:16px 0;text-align:center;border:1.5px solid rgba(15,30,61,.2);font:600 13px 'Oswald',sans-serif;letter-spacing:.14em;color:rgba(15,30,61,.35);text-decoration:line-through">XG</div>
+        </div>
+        <div style="margin-top:10px;font:400 12px/1.5 'Libre Caslon Text',serif;font-style:italic;color:rgba(15,30,61,.65)">Restam apenas 3 unidades no M — feito em edição limitada de 24 peças.</div>
+      </div>
+
+      <!-- CTAs -->
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+        <a style="background:#0f1e3d;color:#f4ecd8;padding:22px;text-align:center;font:700 13px 'Oswald',sans-serif;letter-spacing:.28em;text-transform:uppercase">Adicionar à sacola — R$ 899,00</a>
+        <a style="border:1.5px solid #0f1e3d;color:#0f1e3d;padding:20px;text-align:center;font:700 13px 'Oswald',sans-serif;letter-spacing:.28em;text-transform:uppercase">Favoritar ♡</a>
+      </div>
+
+      <!-- Shipping -->
+      <div style="display:grid;grid-template-columns:1fr auto;gap:8px;padding:16px;background:#e8dcc0;border:1px solid rgba(15,30,61,.15);font:500 12px/1.5 'JetBrains Mono',monospace;color:#0f1e3d">
+        <div>
+          <div style="font-weight:600;text-transform:uppercase;letter-spacing:.2em;font-size:11px;margin-bottom:6px">Envio para 01310-000</div>
+          <div style="font-family:'Libre Caslon Text',serif;font-size:14px">SEDEX — 2 a 4 dias úteis · R$ 24,90</div>
+          <div style="font-family:'Libre Caslon Text',serif;font-size:14px;opacity:.6">PAC — 6 a 9 dias úteis · Grátis</div>
+        </div>
+        <a style="align-self:end;text-decoration:underline">Alterar</a>
+      </div>
+
+      <!-- Accordions -->
+      <div style="margin-top:8px;border-top:1px solid rgba(15,30,61,.2)">
+        <div style="padding:18px 0;border-bottom:1px solid rgba(15,30,61,.2);display:flex;justify-content:space-between;font:600 12px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#0f1e3d"><span>Composição & Fit</span><span>−</span></div>
+        <div style="padding:0 0 18px;font:400 14px/1.6 'Libre Caslon Text',serif;color:rgba(15,30,61,.85);border-bottom:1px solid rgba(15,30,61,.2)">
+          80% lã · 20% poliéster · mangas em couro legítimo pull-up. Modelagem regular, ombro caído. Forro em cetim navy com bordado interno "won by your own". Modelo veste M · altura 1,82m.
+        </div>
+        <div style="padding:18px 0;border-bottom:1px solid rgba(15,30,61,.2);display:flex;justify-content:space-between;font:600 12px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#0f1e3d"><span>Cuidados</span><span>+</span></div>
+        <div style="padding:18px 0;border-bottom:1px solid rgba(15,30,61,.2);display:flex;justify-content:space-between;font:600 12px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#0f1e3d"><span>Envio & devolução</span><span>+</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Editorial detail band -->
+  <div style="background:#0f1e3d;color:#f4ecd8;padding:100px 40px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;border-top:1px solid rgba(244,236,216,.12)">
+    <div>
+      <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.3em;text-transform:uppercase;opacity:.6;margin-bottom:20px">Detalhes de construção</div>
+      <h2 style="font:900 72px/.9 'Cinzel',serif;margin:0 0 24px;letter-spacing:.01em">Feita pra durar<br>uma década.</h2>
+      <p style="font:400 18px/1.55 'Libre Caslon Text',serif;max-width:520px;opacity:.85;margin:0 0 32px">Lã tecida no interior de Minas, mangas em couro curtido a vegetal, botões metálicos gravados com o "W". Cada Rivalry é numerada à mão — a sua é a nº 007 de 024.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;font:500 12px/1.5 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase">
+        <div><div style="opacity:.55;margin-bottom:6px">Origem</div><div>São Paulo, BR</div></div>
+        <div><div style="opacity:.55;margin-bottom:6px">Tempo de produção</div><div>~46h por peça</div></div>
+        <div><div style="opacity:.55;margin-bottom:6px">Bordado</div><div>Manual — 3 dias</div></div>
+        <div><div style="opacity:.55;margin-bottom:6px">Peso</div><div>1,4 kg</div></div>
+      </div>
+    </div>
+    <div style="aspect-ratio:1/1;background:#132546;background-image:repeating-linear-gradient(45deg,rgba(244,236,216,.06) 0 20px,transparent 20px 40px);display:flex;align-items:center;justify-content:center;font:500 12px 'JetBrains Mono',monospace;color:rgba(244,236,216,.4);letter-spacing:.24em;text-transform:uppercase">
+      [ detalhe · patch bordado + couro pull-up ]
+    </div>
+  </div>
+
+  <!-- You may also like -->
+  <div style="background:#f4ecd8;padding:80px 40px">
+    <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:32px;border-bottom:1px solid #0f1e3d;padding-bottom:20px">
+      <div>
+        <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.3em;color:#0f1e3d;margin-bottom:8px">— DO MESMO DROP</div>
+        <h2 style="font:900 48px/.9 'Cinzel',serif;margin:0;color:#0f1e3d">Combine no time.</h2>
+      </div>
+      <a style="font:700 12px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#0f1e3d;border-bottom:1.5px solid #0f1e3d;padding-bottom:2px">Ver drop completo →</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
+      <div>
+        <div style="background:#0f1e3d;aspect-ratio:3/4;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background-image:repeating-linear-gradient(45deg,rgba(244,236,216,.06) 0 12px,transparent 12px 24px)">
+          <span style="font:500 10px 'JetBrains Mono',mono;color:rgba(244,236,216,.4);letter-spacing:.2em;text-transform:uppercase">[ hoodie navy ]</span>
+        </div>
+        <div style="font:700 15px 'Cinzel',serif;color:#0f1e3d">Hoodie "Own"</div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font:500 12px 'Libre Caslon Text',serif;color:#0f1e3d"><span>Moletom pesado 450g</span><span>R$ 429</span></div>
+      </div>
+      <div>
+        <div style="background:#e8dcc0;aspect-ratio:3/4;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background-image:repeating-linear-gradient(45deg,rgba(15,30,61,.04) 0 12px,transparent 12px 24px)">
+          <span style="font:500 10px 'JetBrains Mono',mono;color:rgba(15,30,61,.4);letter-spacing:.2em;text-transform:uppercase">[ tee creme ]</span>
+        </div>
+        <div style="font:700 15px 'Cinzel',serif;color:#0f1e3d">Tee "Est. MMXXV"</div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font:500 12px 'Libre Caslon Text',serif;color:#0f1e3d"><span>Algodão 240g</span><span>R$ 189</span></div>
+      </div>
+      <div>
+        <div style="background:#a63a2a;aspect-ratio:3/4;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background-image:repeating-linear-gradient(45deg,rgba(244,236,216,.08) 0 12px,transparent 12px 24px)">
+          <span style="font:500 10px 'JetBrains Mono',mono;color:rgba(244,236,216,.4);letter-spacing:.2em;text-transform:uppercase">[ boné ]</span>
+        </div>
+        <div style="font:700 15px 'Cinzel',serif;color:#0f1e3d">Boné "W" 6-panel</div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font:500 12px 'Libre Caslon Text',serif;color:#0f1e3d"><span>Sarja lavada</span><span>R$ 159</span></div>
+      </div>
+      <div>
+        <div style="background:#e8dcc0;aspect-ratio:3/4;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background-image:repeating-linear-gradient(45deg,rgba(15,30,61,.04) 0 12px,transparent 12px 24px)">
+          <span style="font:500 10px 'JetBrains Mono',mono;color:rgba(15,30,61,.4);letter-spacing:.2em;text-transform:uppercase">[ tee bordada ]</span>
+        </div>
+        <div style="font:700 15px 'Cinzel',serif;color:#0f1e3d">Tee "Rivalry Patch"</div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font:500 12px 'Libre Caslon Text',serif;color:#0f1e3d"><span>Algodão 260g bordado</span><span>R$ 229</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer style="background:#0f1e3d;padding:60px 40px 32px;color:#f4ecd8">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid rgba(244,236,216,.2)">
+      <div>
+        <div style="font:900 32px 'Cinzel',serif;letter-spacing:.24em;margin-bottom:16px">WONNER</div>
+        <p style="font:400 14px/1.5 'Libre Caslon Text',serif;max-width:340px;opacity:.8">Peças feitas com propósito, para quem constrói a própria vitória. Drop a drop.</p>
+      </div>
+      <div>
+        <div style="font:700 11px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;margin-bottom:14px">Loja</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font:14px/1.6 'Libre Caslon Text',serif;opacity:.8"><a>Camisetas</a><a>Moletons</a><a>Acessórios</a><a>Drops anteriores</a></div>
+      </div>
+      <div>
+        <div style="font:700 11px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;margin-bottom:14px">Ajuda</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font:14px/1.6 'Libre Caslon Text',serif;opacity:.8"><a>Trocas & devoluções</a><a>Envio</a><a>Guia de tamanhos</a><a>Contato</a></div>
+      </div>
+      <div>
+        <div style="font:700 11px 'Oswald',sans-serif;letter-spacing:.24em;text-transform:uppercase;margin-bottom:14px">Newsletter</div>
+        <p style="font:400 13px/1.5 'Libre Caslon Text',serif;margin:0 0 12px;opacity:.8">Avisos de drops antes de todo mundo.</p>
+        <div style="display:flex;border-bottom:1px solid #f4ecd8;padding-bottom:6px"><span style="font:400 13px 'Libre Caslon Text',serif;font-style:italic;opacity:.5;flex:1">seu@email.com</span><span style="font:700 11px 'Oswald',sans-serif;letter-spacing:.2em">ASSINAR →</span></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:20px;font:500 11px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;opacity:.6">
+      <span>© MMXXVI Wonner · CNPJ 00.000.000/0001-00</span>
+      <span>Instagram · TikTok · YouTube</span>
+    </div>
+  </footer>
+</div>
+
+</x-dc>
+</body>
+</html>
