@@ -20,33 +20,6 @@ Prioridade: 🔴 bloqueia · 🟡 importante · ⚪ pode esperar
 
 ## Em discussão agora: requisitos e regras de negócio
 
-### RQ-01 🔴 Não existe requisito para a página de detalhe do produto
-O RF007 cobre o catálogo (cards) e o RF005 a busca, mas nenhum RF descreve a tela
-que apresenta um produto: fotos, descrição, seleção de tamanho/cor, disponibilidade
-e botão de compra. A tela existe no design (`PDP.dc.html`), não no documento.
-**Decidir:** criar RF novo (essencial).
-
-### RQ-02 🔴 Não existe requisito para consultar os próprios pedidos
-A RN de "histórico inalterável" pressupõe que o cliente vê o histórico, mas nenhum
-RF descreve essa tela nem o acompanhamento do status pós-pagamento.
-**Decidir:** criar RF novo (essencial).
-
-### RQ-03 🔴 Não existe requisito para o painel administrativo
-Toda a seção 1.4.3 (CADASTRAR/ALTERAR/EXCLUIR/PESQUISAR) e os quatro relatórios
-pressupõem um admin, e a RN de níveis de acesso cita "Admin". Nenhum RF descreve
-o painel. É aproximadamente metade do sistema, sem requisito que o ampare.
-**Decidir:** criar RF novo (essencial).
-
-### RQ-07 🟡 `usuario.status` acumula dois conceitos
-O campo é usado tanto para papel (Admin/Comprador) quanto para situação
-(ativo/inativo/bloqueado). São dois eixos independentes: um Admin pode estar inativo.
-**Decidir:** separar em `papel` e `situacao`.
-
-### RQ-08 🟡 "Histórico inalterável" não diz nada sobre o admin
-A RN proíbe alteração "pelo cliente". Se o admin pode editar pedido finalizado, o
-histórico não é inalterável e a premissa de integridade (NF002) cai.
-**Decidir:** o que o admin pode alterar em pedido finalizado, e se fica registro.
-
 ### RQ-09 🟡 LGPD conflita com histórico inalterável
 A LGPD (art. 18) dá ao titular o direito de eliminação dos dados; a RN de histórico
 inalterável exige preservar o pedido. As duas não podem valer ao mesmo tempo na
@@ -64,23 +37,6 @@ precisa existir como regra e como estado do pedido.
 Regra de negócio precisa ser testável. "Garantido" não diz prazo, nem o que
 acontece se não chegar.
 **Decidir:** reescrever como prazo + política de reenvio/reembolso, ou remover.
-
-### RQ-13 ⚪ Recuperação de senha não está no RF001
-O RF001 cobre cadastro e autenticação, não "esqueci minha senha". Sem isso, cliente
-que esquece a senha está permanentemente fora (a senha está com hash).
-**Decidir:** incluir no RF001. O starter kit do Laravel já entrega — custo ~zero.
-
-### RQ-14 ⚪ Nenhum requisito de confirmação do pedido por e-mail
-Pedido sem comprovante gera desconfiança — e credibilidade é o desafio declarado
-na seção 1.2 do próprio documento.
-**Decidir:** RF (importante) ou fora de escopo.
-
-### RQ-16 ⚪ Três listas diferentes de relatórios
-Seção 1.4.3-C: Vendas por Cliente, Produtos Vendidos, Estoque, Pagamentos.
-Diagrama geral: Estoque por Produto, Vendas por produto, Vendas por Tamanho.
-Seção 3.2: Produtos Vendidos, Vendas por Cliente, Estoque, Pagamentos.
-A seção 4.4 pede o SQL de cada um — precisa de **uma** lista fechada.
-**Decidir:** a lista final.
 
 ---
 
@@ -104,12 +60,14 @@ Listada como movimentação na 1.4.3-B, ausente nos dois diagramas. Sem ela,
 antes do primeiro produto. Deveria ser `0..*`.
 (Já `produto 1 ── 1..* variante` faz sentido: produto sem variante não é vendável.)
 
-### MD-07 🟡 Modelar as entidades criadas pelas decisões D-01 a D-09
+### MD-07 🟡 Redesenhar os diagramas 2.1, 2.3 e 2.4
 Os diagramas de classes e relacional ainda não contêm:
 `pagamento` (D-02) · reserva de estoque com expiração de 15 min (D-01, D-08) ·
 faixas de frete (D-04) · `carrinho_item` (D-09) · imagens por variante (D-08) ·
 `telefone` em usuário e `sku` em variante (D-08) · campos descritivos do produto (D-08).
-**Fazer:** redesenhar 2.3 e 2.4 com essas entidades.
+E o diagrama geral (2.1) precisa refletir os cadastros e movimentações novos e os cinco
+relatórios definidos em D-17.
+**Fazer:** redesenhar 2.1, 2.3 e 2.4.
 
 ---
 

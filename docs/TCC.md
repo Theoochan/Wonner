@@ -26,12 +26,12 @@ Felipe T. Rodrigues
 
 ## Estado do documento
 
-Decisões aplicadas: `D-01` a `D-06` (ver [DECISOES.md](DECISOES.md)).
+Decisões aplicadas: `D-01` a `D-17` (ver [DECISOES.md](DECISOES.md)).
 
 | Seção | Situação |
 |---|---|
-| 1.1 – 1.5 | ✅ Escrita · 10 pendências ainda afetam 1.4 e 1.5 |
-| 2.1 Diagrama geral | ✅ Escrita e diagramada |
+| 1.1 – 1.5 | ✅ Escrita · RF001 a RF015 · 3 pendências ainda afetam 1.5 |
+| 2.1 Diagrama geral | ⚠️ Texto escrito, **diagrama a redesenhar** (`MD-07`) |
 | 2.2 Casos de uso | ⚠️ Texto escrito, **diagrama ausente** |
 | 2.3 Diagrama de classes | ✅ Escrita e diagramada · pendências `MD-*`, `DV-*` |
 | 2.4 Modelo relacional | ✅ Escrita e diagramada · pendências `MD-*`, `TP-*` |
@@ -132,7 +132,6 @@ informações essenciais para identificação e responsabilização do usuário 
 Disponibilizando o devido acesso do usuário, seguro e privado, aos seus respectivos
 dados.
 
-<!-- PENDENCIA: RQ-13 — recuperação de senha não está contemplada aqui -->
 
 #### 1.4.1.2 [RF002] Calcular valores de produtos selecionados
 
@@ -208,8 +207,6 @@ O sistema deve apresentar os "cards" de produto na tela inicial por intersecçõ
 produtos com categorias semelhantes pré-definidas.
 
 <!-- PENDENCIA: MD-01 — "categorias pré-definidas" não existem no modelo de dados -->
-<!-- PENDENCIA: RQ-01 — o card leva a uma página de produto que nenhum RF descreve -->
-<!-- PENDENCIA: RQ-02, RQ-03 — faltam RF de "meus pedidos" e painel administrativo -->
 
 #### 1.4.1.8 [RF008] Confirmar pagamento
 
@@ -231,6 +228,72 @@ prioridade: Essencial.
 
 O sistema deve permitir ao administrador cadastrar, alterar, excluir e pesquisar faixas
 de CEP com o respectivo valor de frete e prazo de entrega estimado.
+
+#### 1.4.1.10 [RF010] Apresentar detalhe do produto
+
+prioridade: Essencial.
+
+O sistema deve apresentar a página do produto contendo a galeria de imagens da variante
+selecionada, nome, preço, descrição, composição, cuidados, política de envio e devolução,
+seleção de cor e tamanho, quantidade disponível e produtos da mesma categoria.
+
+Variantes sem disponibilidade devem ser apresentadas **riscadas** — visíveis, porém não
+selecionáveis —, de modo que o cliente identifique a existência da variante e a
+indisponibilidade momentânea.
+
+#### 1.4.1.11 [RF011] Consultar pedidos
+
+prioridade: Essencial.
+
+O sistema deve apresentar ao cliente autenticado a relação de seus pedidos com o
+respectivo estado, em ordem decrescente de data. Havendo código de rastreio registrado,
+ele deve ser exibido junto ao estado do pedido.
+
+#### 1.4.1.12 [RF012] Gerenciar cadastros
+
+prioridade: Essencial.
+
+O sistema deve permitir ao administrador cadastrar, salvar, alterar, cancelar, excluir e
+pesquisar os cadastros de marca, categoria, produto, variante de produto, imagens de
+variante, faixas de frete e usuários, conforme as funções descritas na seção 1.4.3.
+
+#### 1.4.1.13 [RF013] Processar expedição do pedido
+
+prioridade: Essencial.
+
+O sistema deve apresentar ao administrador os pedidos pagos e permitir o avanço do
+respectivo estado ao longo do fluxo de expedição: **separado**, **enviado** e
+**entregue**.
+
+O avanço para o estado "enviado" exige o registro do código de rastreio, e a data do
+envio deve ser gravada automaticamente.
+
+O administrador não pode alterar itens, quantidades, preços, frete ou valores de pedido
+finalizado — apenas avançar o estado e registrar os dados de expedição.
+
+#### 1.4.1.14 [RF014] Recuperar senha
+
+prioridade: Desejável.
+
+O sistema deve permitir ao usuário solicitar a redefinição de sua senha informando o
+e-mail cadastrado, recebendo por e-mail um link de uso único e prazo de validade
+limitado.
+
+Enquanto este requisito não estiver implementado, o usuário que perder a senha perde o
+acesso à conta: a senha é armazenada de forma irreversível e não há outro meio de
+restabelecer o acesso.
+
+#### 1.4.1.15 [RF015] Notificar o cliente por e-mail
+
+prioridade: Desejável.
+
+O sistema deve enviar e-mail ao cliente na confirmação do pagamento, contendo os dados
+do pedido, e no envio do pedido, contendo o código de rastreio.
+
+O envio das mensagens deve ocorrer de forma assíncrona, de modo que uma falha no serviço
+de e-mail não impeça a confirmação do pedido.
+
+
 
 ### 1.4.2 Requisitos não funcionais
 
@@ -317,17 +380,16 @@ Os cadastros são os dados que irão alimentar o sistema a fim de registrar info
 inerentes ao funcionamento do estabelecimento.
 
 1. **Usuário:** `@*código`, `*nome`, `*#CPF`, `*#telefone`, `*endereco`, `*cidade`,
-   `*uf`, `*#cep`, `*status`, `*email`, `*#senha`
+   `*uf`, `*#cep`, `*papel`, `*situacao`, `*email`, `*#senha`
 2. **Produto:** `@*código`, `*nome`, `*descrição`, `*modelo`, `*valor`, `composição`,
    `cuidados`, `envioDevolucao`
-3. **Variante Produto:** `@*código`, `*#sku`, `*cor`, `*tamanho`, `*status`,
+3. **Variante Produto:** `@*código`, `*#sku`, `*cor`, `*tamanho`, `*situacao`,
    `*qtdEstoque`
 4. **Marca:** `@*código`, `*nome`, `*descrição`
 5. **Imagem da Variante:** `@*código`, `*@codVarianteProd`, `*arquivo`, `*ordem`
 6. **Faixa de Frete:** `@*código`, `*cepInicial`, `*cepFinal`, `*valor`, `*prazoDias`
 7. **Item de Carrinho:** `@*código`, `*@codUsuario`, `*@codVarianteProd`, `*qtde`
 
-<!-- PENDENCIA: RQ-07 — usuario.status acumula papel e situação -->
 <!-- PENDENCIA: DV-03 — dataNasc, complemento e numeroResidencia existem no relacional e faltam aqui -->
 <!-- PENDENCIA: MD-01 — falta Categoria · MD-02 — falta imagem do produto -->
 <!-- PENDENCIA: RQ-09 — falta registro do consentimento LGPD (data/hora/versão dos termos) -->
@@ -337,9 +399,9 @@ inerentes ao funcionamento do estabelecimento.
 As movimentações são:
 
 1. **Venda:** `@*código`, `*qntProduto`, `***frete`, `***valorTotal`,
-   `*@codVarianteProd`, `*@codUsuario`, `*status`
+   `*@codVarianteProd`, `*@codUsuario`, `*situacao`, `codigoRastreio`, `@dataEnvio`
 2. **Pagamento:** `@*código`, `*@codVenda`, `*metodo`, `*qtdeParcelas`, `*valor`,
-   `*status`, `#idExterno`, `dataConfirmacao`
+   `*situacao`, `#idExterno`, `dataConfirmacao`
 3. **Entrada:** `@*código`, `*@codVarianteProd`, `*qntProduto`
 
 Uma venda possui um ou mais pagamentos, um por tentativa de cobrança: uma cobrança
@@ -356,13 +418,20 @@ Os relatórios são a junção de dados e informações de maneira organizada pa
 apresentadas de maneira rápida e organizada de modo a auxiliar em tomada de decisão do
 usuário do sistema ou de outro encarregado (gerente da empresa).
 
-- Relatório de Vendas por Cliente (possível analisar o perfil dos clientes que mais
-  compram)
-- Relatório de Produtos Vendidos (possível analisar os produtos que mais vendem)
-- Relatório de Estoque de Produtos (gerenciar estoque)
-- Relatório de Pagamentos Recebidos
+| Relatório | Agrupa por | Exibe | Serve para |
+|---|---|---|---|
+| **Vendas por Cliente** | usuário | nº de pedidos, valor total, ticket médio, data do último pedido | identificar quem mais compra |
+| **Produtos Vendidos** | produto, detalhando variante | quantidade vendida, receita | saber o que mais vende |
+| **Vendas por Tamanho** | tamanho da variante | quantidade vendida, participação percentual | dimensionar a próxima produção |
+| **Estoque de Produtos** | variante | quantidade em estoque, reservada e disponível | repor antes de esgotar |
+| **Pagamentos Recebidos** | período, método e nº de parcelas | valor confirmado | acompanhar a entrada de caixa |
 
-<!-- PENDENCIA: RQ-16 — esta lista difere da do diagrama geral (2.1) e da do sumário (3.2) -->
+Duas regras valem para todos os relatórios:
+
+1. Somente pedidos efetivamente pagos são considerados nos relatórios de venda — pedidos
+   nas situações `aguardando_pagamento`, `expirado` e `cancelado` são excluídos;
+2. Os valores apresentados são os congelados no pedido, não os do cadastro corrente, de
+   modo que reajustes de preço não alterem resultados de períodos anteriores.
 
 ## 1.5 REGRAS DE NEGÓCIO
 
@@ -377,9 +446,13 @@ Para este sistema, serão definidas as seguintes regras de negócio abaixo:
 - O usuário pode comprar diversos produtos em uma venda;
 - **LGPD obrigatória:** o cliente deve marcar um checkbox de consentimento de termos de
   uso antes de finalizar o cadastro;
-- O nível de acesso do usuário será controlado através de status (Admin, Comprador);
+- O nível de acesso do usuário é determinado pelo seu **papel** (Admin ou Comprador),
+  atributo distinto de sua **situação** (ativo ou inativo): um administrador inativo não
+  acessa o sistema, e um comprador inativo não realiza compras;
 - **Histórico inalterável:** o histórico de pedidos finalizados não pode ser apagado ou
-  editado pelo cliente;
+  editado pelo cliente. Ao administrador é permitido apenas avançar o estado do pedido e
+  registrar dados de expedição (código de rastreio e datas); itens, quantidades, preços,
+  frete e valores são imutáveis para todos os perfis;
 - O pagamento poderá ser realizado tanto a vista quanto à prazo (crédito);
 - O recebimento do produto é garantido pela Wonner.
 
@@ -414,6 +487,16 @@ Para este sistema, serão definidas as seguintes regras de negócio abaixo:
 - A quantidade máxima de parcelas é limitada a 6 e ao valor mínimo de R$ 50,00 por
   parcela, prevalecendo o menor dos dois limites.
 
+**Estados do pedido**
+
+- O pedido percorre os estados: `aguardando_pagamento` → `pago` → `separado` → `enviado`
+  → `entregue`;
+- A partir de `aguardando_pagamento`, o pedido pode ir para `expirado` (fim do prazo de
+  reserva) ou `cancelado`;
+- A passagem para `pago` é automática, na confirmação do pagamento; as demais são ações
+  do administrador;
+- A passagem para `enviado` exige o registro do código de rastreio.
+
 **Entrega**
 
 - O valor do frete é determinado pela faixa de CEP correspondente ao endereço de entrega;
@@ -421,7 +504,6 @@ Para este sistema, serão definidas as seguintes regras de negócio abaixo:
   alterações posteriores na tabela de faixas.
 
 <!-- PENDENCIA: RQ-09 — LGPD conflita com histórico inalterável (art. 18, direito de eliminação) -->
-<!-- PENDENCIA: RQ-07 — controle de acesso por "status" mistura papel e situação -->
 <!-- PENDENCIA: RQ-08 — "inalterável pelo cliente" não diz nada sobre o admin -->
 <!-- PENDENCIA: RQ-10 — falta o direito de arrependimento de 7 dias (CDC art. 49) -->
 <!-- PENDENCIA: RQ-11 — "o recebimento é garantido pela Wonner" não é verificável -->
@@ -448,8 +530,8 @@ visualização e o entendimento das funcionalidades do sistema.
 
 ![Diagrama geral do sistema](diagramas/2.1-diagrama-geral.png)
 
-<!-- PENDENCIA: RQ-16 — os relatórios aqui (Estoque por Produto, Vendas por produto,
-     Vendas por Tamanho) diferem dos listados na seção 1.4.3-C -->
+<!-- PENDENCIA: MD-07 — o diagrama precisa ser redesenhado: cadastros e movimentações
+     novos, e os cinco relatórios definidos em D-17 -->
 
 ## 2.2 DIAGRAMA DE CASOS DE USO
 
@@ -510,9 +592,9 @@ implementação do banco de dados, se tornam tabelas.
 
 ## 3.2 Interfaces Impressas
 
-> **⚠️ Não escrita.** O sumário do documento original prevê:
-> 3.2.1 Relatório de Produtos Vendidos · 3.2.2 Relatório de Vendas Por Cliente ·
-> 3.2.3 Relatório de Estoque de Produtos · 3.2.4 Relatório de Pagamentos.
+> **⚠️ Não escrita.** Cinco relatórios, conforme a seção 1.4.3-C:
+> 3.2.1 Vendas por Cliente · 3.2.2 Produtos Vendidos · 3.2.3 Vendas por Tamanho ·
+> 3.2.4 Estoque de Produtos · 3.2.5 Pagamentos Recebidos.
 
 ---
 
