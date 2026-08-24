@@ -368,6 +368,9 @@ riscado** se representar retrabalho significativo:
   a redefinição manual pelo administrador (D-14).
 - Notificações de pedido por e-mail — confirmação do pagamento e envio com o código de
   rastreio (D-14).
+- Autosserviço de cancelamento e devolução — o cliente solicita pela própria conta, com
+  verificação de elegibilidade por prazo e situação, e estorno automatizado junto ao
+  provedor (D-18).
 
 **Alternativas descartadas:**
 
@@ -647,6 +650,458 @@ Duas regras valem para todos:
 - A seção 3.2 passa a ter cinco subseções, e a 4.4 cinco consultas.
 - "Pagamentos Recebidos" só é possível por causa de `pagamento.dataConfirmacao` (D-02);
   antes dela, o relatório não tinha origem de dados.
+
+---
+
+## D-18 — Arrependimento e devolução: regra declarada, execução manual
+**Pendência:** RQ-10 · **Data:** 2026-08-17
+
+**Contexto:** o Código de Defesa do Consumidor (art. 49) dá ao consumidor sete dias para
+desistir de compra feita fora do estabelecimento comercial. O documento citava a LGPD como
+obrigação legal e omitia esta, embora sejam do mesmo naipe. Definido que fluxo
+automatizado de cancelamento não é prioridade para o MVP, era preciso separar o que é
+obrigação do que é funcionalidade.
+
+**Decisão:**
+
+1. **A regra é declarada** na seção 1.5: sete dias corridos a contar do recebimento. Ela
+   vale independentemente de o sistema automatizá-la.
+2. **A solicitação ocorre fora do sistema** (canal de atendimento) e é **registrada pelo
+   administrador**, que altera a situação do pedido — mesmo padrão da expedição (D-12).
+3. **O estorno é realizado junto ao provedor de pagamento**, por sua própria interface. O
+   sistema registra a situação `estornado` do pagamento; não executa a devolução do valor.
+4. **A reentrada do item devolvido ao estoque é decisão do administrador**, registrada como
+   entrada de estoque — peça devolvida pode não estar em condição de revenda.
+5. Transições permitidas:
+
+| De | Para | Situação |
+|---|---|---|
+| `aguardando_pagamento` | `cancelado` | desistência antes do pagamento, ou fim do prazo de reserva (`expirado`) |
+| `pago`, `separado` | `cancelado` | desistência antes do envio — exige estorno |
+| `enviado`, `entregue` | `devolvido` | arrependimento ou devolução — exige estorno e decisão de reentrada em estoque |
+
+**Alternativas descartadas:**
+
+- *Autosserviço de cancelamento e estorno automático.* Avaliado caso a caso, o ganho não
+  se sustenta: o caso trivial — pedido ainda não pago — já é resolvido pela expiração da
+  reserva em 15 minutos (D-01), de modo que um botão economizaria minutos de espera a quem
+  já desistiu de comprar; o caso intermediário — estorno antes do envio — depende do
+  provedor real, que só existe na fase 2, e exige a mesma maquinaria assíncrona do
+  pagamento para confirmar o estorno; e o caso mais frequente na prática — devolução após
+  a entrega — tem a **inspeção física da peça** como gargalo, e nenhum software encurta
+  esse ciclo. Adiado para a **fase 3** (D-10). Registrar a ocorrência manualmente custa
+  dois botões na tela do RF013, que já existe.
+- *Omitir a regra do documento por não haver funcionalidade correspondente.* A obrigação
+  existe por lei; um documento de requisitos que a ignora descreve um sistema que a
+  empresa não pode operar em conformidade. Declarar a política e executá-la manualmente é
+  conformidade; não mencioná-la é omissão.
+- *Estorno automático pelo sistema.* Movimentar dinheiro de volta por conta própria
+  acrescenta risco desproporcional a um sistema que ainda não processa pagamento real.
+
+**Consequências:**
+
+- Nenhuma tela nova no MVP: as transições entram no RF013, junto com a expedição.
+- Reforça a necessidade de registrar **entrada de estoque** (pendência MD-05), que agora
+  tem dois motivos: reposição e devolução.
+- A menção "Troca grátis em 30 dias" no design precisa ser ajustada aos sete dias legais
+  (pendência DS-01).
+- Cancelar pedido pago sem estorno correspondente é inconsistência a evitar; no MVP, os
+  dois passos são manuais e a responsabilidade é do operador.
+
+---
+
+## D-19 — A garantia de recebimento sai das regras de negócio
+**Pendência:** RQ-11 · **Data:** 2026-08-17
+
+**Contexto:** a seção 1.5 trazia "o recebimento do produto é garantido pela Wonner". Regra
+de negócio precisa ser verificável, e essa não diz prazo, nem o que ocorre se a entrega
+falhar — não é implementável nem testável.
+
+**Decisão:** a regra é **removida** da seção 1.5. O compromisso permanece como **política
+comercial**, redigida no conteúdo do site (campo `envioDevolucao` do produto, D-08), e não
+como requisito de sistema.
+
+**Alternativas descartadas:**
+
+- *Reescrever como prazo e política ("entrega em até X dias, senão reenvio ou reembolso").*
+  Tornaria a regra verificável ao preço de criar obrigação nova: monitorar o prazo de cada
+  pedido enviado, detectar atraso e disparar providência. Trabalho que nenhum requisito
+  pedia.
+
+**Consequências:**
+
+- Nada deixa de funcionar: a regra não governava comportamento algum.
+- A parte que era de fato verificável já existe: o prazo estimado por faixa de CEP
+  (`faixa_frete.prazoDias`, RF009), exibido no checkout.
+- Regras de negócio passam a conter apenas enunciados verificáveis; promessas comerciais
+  ficam no conteúdo.
+
+---
+
+## D-20 — LGPD: consentimento registrado e anonimização a pedido legal
+**Pendência:** RQ-09 · **Data:** 2026-08-17
+
+**Contexto:** duas lacunas. A regra de LGPD exigia um checkbox de consentimento que não era
+registrado em lugar nenhum do modelo — sem data, hora e versão dos termos, não há como
+provar que o consentimento existiu, o que é justamente a obrigação da lei. E o direito de
+eliminação (art. 18) contradiz frontalmente a regra de histórico inalterável: as duas não
+podem valer ao mesmo tempo na forma em que estavam escritas.
+
+**Decisão:**
+
+1. **O consentimento é registrado**: `usuario` ganha `consentimentoEm` (data e hora) e
+   `versaoTermos`, preenchidos no aceite. Duas colunas.
+2. **Atendido pedido legal de eliminação, o cadastro é anonimizado, não excluído.** Os
+   dados pessoais — nome, CPF, e-mail, telefone e endereço — são substituídos por valores
+   sem identificação; os pedidos, valores e datas permanecem intactos.
+   **Ressalva:** ficam retidos, pelo prazo legal aplicável, os dados cuja conservação seja
+   exigida por obrigação legal ou necessária ao exercício de direitos em processo judicial,
+   administrativo ou arbitral. A anonimização alcança o que estiver fora dessas hipóteses.
+3. `usuario.situacao` ganha o valor **`anonimizado`**, distinto de `inativo`: uma conta
+   anonimizada **não pode ser reativada**, pois os dados não são recuperáveis. O valor se
+   justifica por ter comportamento próprio, critério fixado em D-16.
+4. **A execução é manual**, pelo administrador, via cadastro de usuários (RF012) — mesmo
+   padrão da expedição (D-12) e das devoluções (D-18).
+
+**Alternativas descartadas:**
+
+- *Excluir o registro do usuário.* A exclusão levaria consigo os pedidos, por integridade
+  referencial, apagando registros de operações comerciais que a empresa precisa conservar.
+  A anonimização atende ao direito do titular — o dado pessoal deixa de existir — sem
+  destruir o registro fiscal.
+- *Manter a regra de histórico inalterável sem ressalva.* Deixaria o sistema em
+  descumprimento do art. 18 sempre que houvesse pedido de eliminação.
+- *Anonimizar integralmente e de imediato, sem ressalva de retenção legal.* Foi a primeira
+  redação desta decisão. O direito de eliminação, porém, não é absoluto: alcança
+  primariamente dados tratados sob consentimento, e o art. 16 excetua o que precisa ser
+  conservado por obrigação legal. Registros de operação comercial têm prazo de guarda
+  próprio, e a defesa em processo judicial é base legal autônoma de tratamento. Anonimizar
+  de imediato seria mais restritivo que a lei exige e privaria a empresa de identificar a
+  contraparte de uma transação questionada judicialmente.
+- *Rotina automatizada de anonimização, acionada pelo próprio titular.* Exigiria fluxo de
+  verificação de identidade do solicitante — sem o qual qualquer um poderia destruir a
+  conta de outro — para um evento raro.
+
+**Consequências:**
+
+- **Cuidado de implementação:** `email` e `cpf` são únicos (pendência TP-06). Os valores de
+  substituição precisam ser únicos por registro, do tipo
+  `anonimizado-{id}@invalido.local`, ou a anonimização do segundo usuário falha.
+- **A anonimização alcança os pedidos.** Por D-22, o endereço de entrega e o nome do
+  destinatário são copiados para cada venda, e são dados pessoais. A rotina precisa
+  limpá-los em todas as vendas do titular, não apenas no cadastro do usuário.
+- Os relatórios de Vendas por Cliente passam a poder exibir clientes anonimizados; os
+  valores continuam corretos, apenas sem identificação.
+- A ressalva de anonimização é acrescentada à regra de histórico inalterável, tornando
+  explícita a convivência entre as duas obrigações.
+
+---
+
+## D-21 — Categoria e modelagem são dois eixos, não uma hierarquia
+**Pendência:** MD-01 · **Data:** 2026-08-17
+
+**Contexto:** o RF007 exige categorias "pré-definidas", e o que existia era
+`produto.modelo VARCHAR(45)`, texto livre. Ao discutir, notou-se que "oversized" pareceria
+naturalmente uma subcategoria de "Camisetas", o que sugeria hierarquia.
+
+**Decisão:** duas dimensões independentes, ambas planas:
+
+- **`categoria`** — entidade própria, relação **1:N** com produto (um produto pertence a
+  uma categoria; uma categoria tem vários produtos). Sem hierarquia. Valores iniciais:
+  Camisetas, Moletons, Acessórios.
+- **`produto.modelagem`** — atributo do produto, com lista fechada de valores
+  (`regular`, `oversized`, `cropped`, …), anulável para itens em que não se aplica
+  (acessórios). É o antigo `modelo`, renomeado e tipado.
+
+**Alternativas descartadas:**
+
+- *Hierarquia de categorias (Camisetas → Oversized).* Produziria nós distintos com o mesmo
+  significado — "Camisetas → Oversized" e "Moletons → Oversized" —, sintoma de ter
+  modelado um atributo como nível hierárquico. Além disso exigiria tabela auto-relacionada
+  e consulta recursiva. Com dois eixos independentes, "camisetas oversized" é a
+  interseção de dois filtros, sem duplicação e sem recursão.
+- *Eliminar `modelo`.* Foi a recomendação inicial, por parecer redundante com a categoria.
+  A observação sobre oversized mostrou que descreve o corte da peça, ortogonal ao tipo, e
+  portanto tem função própria.
+- *Relação N:N entre produto e categoria.* A navegação da loja separa tipos de peça
+  mutuamente exclusivos — um moletom não é uma camiseta —, o que dispensa a associativa.
+- *`modelagem` em tabela de domínio própria.* Permitiria ao administrador acrescentar
+  cortes sem alterar o esquema, ao custo de mais uma tabela e mais uma tela. Com lista
+  fechada no esquema, acrescentar um valor exige migração — aceitável pela raridade.
+
+**Consequências:**
+
+- O RF005 (busca por "nome, cor, modelo, descrição") passa a buscar por categoria e
+  modelagem.
+- Os filtros do catálogo combinam os dois eixos livremente.
+- `produto` ganha `categoria_id` e perde `modelo`, substituído por `modelagem`.
+
+---
+
+## D-22 — O endereço de entrega é copiado para o pedido
+**Pendência:** MD-03 · **Data:** 2026-08-17
+
+**Contexto:** o endereço existia apenas em `usuario`. Um cliente que muda de casa faria
+todos os pedidos passados apontarem para o endereço novo — o mesmo problema que
+`venda_item.subTotal` já resolvia para preço, e que seguia aberto para entrega.
+
+**Decisão:** no fechamento do pedido, os dados de entrega são **copiados para `venda`**:
+`destinatario`, `cep`, `endereco`, `numero`, `complemento`, `cidade` e `uf`. Alterações
+posteriores no cadastro do usuário não afetam pedidos existentes.
+
+O `destinatario` é registrado separadamente porque quem recebe pode não ser o titular da
+conta.
+
+**Alternativas descartadas:**
+
+- *Tabela `endereco_entrega` referenciada pela venda.* Normalizaria um conjunto de valores
+  que, por definição, nunca muda, e cobraria uma junção em toda consulta de pedido e na
+  impressão de etiqueta.
+- *Manter apenas a referência ao endereço do usuário.* É o defeito que a decisão corrige.
+
+**Consequências:**
+
+- **O endereço copiado é dado pessoal.** A anonimização prevista em D-20 precisa limpar
+  também esses campos em cada venda do titular, não apenas o cadastro do usuário.
+- Denormalização deliberada, com a mesma justificativa do `subTotal`: imutabilidade do
+  registro histórico.
+
+---
+
+## D-23 — Entrada de estoque é um evento com quantidade, não uma linha por unidade
+**Pendência:** MD-05 · **Data:** 2026-08-17
+
+**Contexto:** "Entrada" constava como movimentação na seção 1.4.3-B e não existia em
+nenhum diagrama. Sem ela, `qtdEstoque` é um número sem procedência, contrariando a
+premissa de histórico íntegro do NF002. Havia dúvida sobre registrar uma linha por unidade
+física ou uma linha por evento com quantidade.
+
+**Decisão:** uma tabela `entrada_estoque` com **um registro por (variante, evento)**,
+contendo a quantidade: `id`, `variante_id`, `qtde`, `motivo`
+(`compra` | `devolucao` | `ajuste`), `observacao`, `created_at`.
+
+`qtdEstoque` permanece como contador operacional, atualizado pelas entradas e pelas
+baixas de venda, em vez de ser recalculado por soma a cada consulta.
+
+A tela permite informar, em uma única submissão, a quantidade de **várias variantes do
+mesmo produto** (P, M, G, GG), gerando um registro por variante com quantidade diferente
+de zero.
+
+**Alternativas descartadas:**
+
+- *Uma linha por unidade física.* Só se justificaria se cada unidade tivesse identidade
+  própria — número de série, custo individual —, o que D-08 descartou ao remover a
+  numeração por peça. Seriam N linhas idênticas distintas apenas pelo identificador, e
+  toda contagem passaria a `COUNT(*)` em vez de `SUM(qtde)`. É o mesmo critério já aceito
+  em `venda_item`, onde três unidades vendidas são uma linha com quantidade três.
+- *Cabeçalho e itens (`entrada` + `entrada_item`), espelhando venda.* Agruparia um
+  recebimento físico inteiro como um único documento. Acrescenta uma tabela para um ganho
+  que não é exigido por nenhum requisito, e atrapalha o caso de devolução, que é sempre de
+  uma variante só.
+- *Não registrar entradas, editando `qtdEstoque` diretamente.* Custo zero e histórico
+  nenhum: impossível saber se um aumento de estoque foi compra, devolução ou correção de
+  erro.
+
+**Consequências:**
+
+- Dois motivos sustentam a entidade: reposição de fornecedor e reentrada de devolução
+  (D-18).
+- `qtdEstoque` e a soma das movimentações podem divergir por falha de aplicação; a entrada
+  é o registro de auditoria, o contador é o valor de trabalho.
+- Novo requisito funcional para a tela de entrada.
+
+---
+
+## D-24 — A entidade Marca é removida
+**Pendência:** MD-06 · **Data:** 2026-08-17
+
+**Contexto:** o modelo trazia `marca` com relação `1 ── 1..*` para produto — multiplicidade
+que, além de impedir cadastrar uma marca antes do primeiro produto, chamou atenção para a
+entidade em si.
+
+**Decisão:** `marca` é **removida** do modelo. A Wonner vende exclusivamente produtos
+próprios, e D-07 descartou multi-vendedor; a tabela teria uma única linha permanentemente.
+
+**Alternativas descartadas:**
+
+- *Manter `marca` corrigindo a multiplicidade para `0..*`.* Preservaria a possibilidade de
+  revender outras marcas no futuro, ao custo de uma tabela, uma chave estrangeira, uma
+  tela de cadastro e uma junção nas consultas de produto — para um valor constante.
+
+**Consequências:**
+
+- `produto` perde `marca_idmarca`; a lista de cadastros da seção 1.4.3-A perde um item e o
+  RF012 deixa de mencionar marca.
+- Caso a revenda de terceiros entre em pauta, a entidade volta — junto com as demais
+  mudanças que multi-marca exigiria.
+- A multiplicidade `produto 1 ── 1..* variante` permanece: produto sem variante não é
+  vendável.
+
+---
+
+## D-25 — Dinheiro em `DECIMAL(10,2)`
+**Pendência:** TP-01 · **Data:** 2026-08-17
+
+**Contexto:** `produto.valor`, `venda_item.subTotal` e `venda.valorFrete` estavam em
+`DOUBLE`, e o diagrama de classes ainda trazia `subTotal` como `int`.
+
+**Decisão:** todo valor monetário é `DECIMAL(10,2)`: `produto.valor`,
+`venda_item.subtotal`, `venda.valor_frete`, `pagamento.valor` e `faixa_frete.valor`.
+O limite de `DECIMAL(10,2)` — 99.999.999,99 — é folgado para o negócio.
+
+**Alternativas descartadas:**
+
+- *`DOUBLE`.* É ponto flutuante binário conforme IEEE 754: valores como 0,10 não têm
+  representação exata, e somas de centavos acumulam erro. Um pedido pode fechar em
+  1.299,9999998, e comparações de igualdade passam a falhar sem motivo aparente.
+- *Inteiro em centavos.* Elimina o erro de arredondamento e é usado por sistemas
+  financeiros, mas obriga a converter na entrada e na saída de todo valor, e torna
+  ilegível qualquer consulta feita direto no banco.
+
+**Consequências:**
+
+- Fecha a divergência de tipo de `subTotal` entre os diagramas (pendência DV-02).
+- Cálculos de parcela (`valor / qtdeParcelas`, D-03) exigem tratamento explícito de
+  arredondamento na exibição — R$ 100,00 em 3× são 33,33 + 33,33 + 33,34.
+
+---
+
+## D-26 — Nomenclatura do banco: `snake_case` singular, `id` e `<entidade>_id`
+**Pendência:** TP-03 · **Data:** 2026-08-17
+
+**Contexto:** o modelo relacional trazia `variante Produto`, `idvariante Produto` e
+`venda_has_variante Produto` — nomes com espaço, que exigem delimitador em toda consulta e
+quebram a inferência automática do ORM.
+
+**Decisão:**
+
+- Tabelas em `snake_case`, **no singular**: `usuario`, `categoria`, `produto`,
+  `variante_produto`, `imagem_variante`, `faixa_frete`, `carrinho_item`, `venda`,
+  `venda_item`, `pagamento`, `entrada_estoque`.
+- `venda_has_variante Produto` passa a chamar-se **`venda_item`**.
+- Chave primária sempre `id`; chaves estrangeiras no formato `<entidade>_id`
+  (`usuario_id`, `variante_produto_id`).
+
+**Alternativas descartadas:**
+
+- *Padrão do MySQL Workbench (`idusuario`, `usuario_idusuario`).* É o que estava no
+  diagrama, mas obriga cada model do Eloquent a declarar a chave primária e cada
+  relacionamento a informar explicitamente as chaves — configuração repetida sem ganho.
+- *Tabelas no plural, convenção padrão do Eloquent.* Dispensaria declarar o nome da tabela
+  nos models, mas afastaria o banco dos diagramas do documento, que estão no singular.
+  Manter o singular custa uma linha por model — onze no total — e mantém banco e documento
+  falando a mesma língua.
+
+**Consequências:**
+
+- Cada model declara `protected $table` com o nome singular.
+- O DDL da seção 4.2 usa esses nomes; os diagramas 2.3 e 2.4 precisam ser refeitos com eles
+  (pendência MD-07).
+
+---
+
+## D-27 — Tamanho em lista fechada
+**Pendência:** TP-02 · **Data:** 2026-08-17
+
+**Contexto:** `variante_produto.tamanho` estava declarado como `CHAR`, que sem comprimento
+equivale a `CHAR(1)`: caberiam "P", "M" e "G", mas não "GG" nem "XG".
+
+**Decisão:** lista fechada com os valores `PP`, `P`, `M`, `G`, `GG`, `XG` e `U` — este
+último para peça de tamanho único, caso dos acessórios.
+
+**Alternativas descartadas:**
+
+- *`VARCHAR(5)` livre.* Resolveria o comprimento e deixaria o conteúdo à mercê da
+  digitação: "G" e "g" seriam grupos distintos, e o relatório de Vendas por Tamanho (D-17),
+  que agrupa exatamente por esse campo, apresentaria resultado errado. Mesmo critério
+  fixado em D-16.
+- *Tabela de domínio `tamanho`.* Permitiria acrescentar valores sem alterar o esquema, ao
+  custo de mais uma tabela, mais uma tela e uma junção nas consultas de variante.
+
+**Consequências:**
+
+- Vender peça de numeração distinta — calça 38, 40 — exigiria migração. Não ocorre no
+  catálogo atual, composto de moletons, camisetas e acessórios.
+- O relatório de Vendas por Tamanho tem agrupamento estável e ordenável.
+
+---
+
+## D-28 — Datas, unicidade e auditoria
+**Pendência:** TP-05, TP-06, TP-07, DV-02 · **Data:** 2026-08-17
+
+**Contexto:** `dataVenda` era `DATE`, perdendo a hora da compra; nenhuma tabela tinha
+registro de criação ou alteração, embora o NF002 prometesse histórico íntegro; e `cpf` e
+`email` não tinham restrição de unicidade, apesar de serem, respectivamente, chave de
+negócio e credencial de acesso.
+
+**Decisão:**
+
+1. **Toda tabela tem `created_at` e `updated_at`** (`DATETIME`).
+2. **`dataVenda` é removida.** A data da compra é o `created_at` da venda. `data_envio`
+   permanece como coluna própria, por ser outro evento.
+3. **Restrições de unicidade:**
+
+| Tabela | Coluna(s) | Por quê |
+|---|---|---|
+| usuario | `cpf` | chave de negócio — a regra exige CPF para comprar |
+| usuario | `email` | credencial de acesso |
+| variante_produto | `sku` | código operacional precisa identificar uma variante só |
+| pagamento | `id_externo` | **garante a idempotência da confirmação** (D-02) |
+| carrinho_item | (`usuario_id`, `variante_produto_id`) | impede duplicar a variante no carrinho (D-09) |
+| venda_item | (`venda_id`, `variante_produto_id`) | chave primária composta |
+
+**Alternativas descartadas:**
+
+- *Manter `dataVenda` ao lado de `created_at`.* Duas colunas com a mesma informação, que
+  divergem no primeiro ajuste manual de dados.
+- *Dispensar timestamps.* Sem registro de criação, não há como reconstituir quando um
+  estado mudou, e a premissa de histórico íntegro do NF002 fica sem base.
+
+**Consequências:**
+
+- A unicidade de `pagamento.id_externo` é o mecanismo que impede a notificação reenviada do
+  provedor de dar baixa em estoque duas vezes. Não é conveniência.
+- A unicidade de `cpf` e `email` impõe cuidado à anonimização (D-20): os valores de
+  substituição precisam ser distintos por registro.
+- Fecha a divergência de tipo de `dataVenda` entre os diagramas (pendência DV-02).
+
+---
+
+## D-29 — Item de venda explícito e remoção de atributos redundantes
+**Pendência:** DV-01, DV-03 · **Data:** 2026-08-17
+
+**Contexto:** a seção 1.4.3-B colocava `codVarianteProd` dentro de Venda, contrariando os
+próprios diagramas, que já traziam a associativa. Havia ainda atributos presentes em um
+artefato e ausentes no outro.
+
+**Decisão:**
+
+1. **Item de Venda** passa a constar como movimentação própria: `código`, `codVenda`,
+   `codVarianteProd`, `qtdeVendida`, `subTotal` (calculado). `venda` perde
+   `codVarianteProd`.
+2. **`venda.qntProduto` é removida.** É a soma das quantidades dos itens.
+3. **`valorTotal` permanece calculado, não persistido** — é a soma dos subtotais mais o
+   frete, ambos já congelados.
+4. **`numero` e `complemento` entram** no cadastro de Usuário; existiam no modelo
+   relacional e faltavam na lista de atributos.
+5. **`dataNasc` é removida.**
+
+**Alternativas descartadas:**
+
+- *Manter `dataNasc`.* Nenhum requisito a utiliza. A LGPD adota o princípio da
+  **necessidade** — o tratamento deve limitar-se ao mínimo indispensável à finalidade —,
+  de modo que coletar data de nascimento sem uso declarado contraria a lei além de não
+  servir a nada.
+- *Persistir `valorTotal` na venda.* Seria um terceiro lugar guardando o que os subtotais e
+  o frete já determinam, com risco de divergir deles.
+- *Manter `qntProduto` como totalizador.* Mesmo defeito: um total que pode discordar das
+  parcelas que o compõem.
+
+**Consequências:**
+
+- A seção 1.4.3-B passa a ter quatro movimentações: Venda, Item de Venda, Pagamento e
+  Entrada de Estoque.
+- O cadastro de usuário coleta menos dados pessoais, alinhado ao princípio da necessidade.
 
 ---
 

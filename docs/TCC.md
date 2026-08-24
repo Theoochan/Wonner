@@ -26,15 +26,15 @@ Felipe T. Rodrigues
 
 ## Estado do documento
 
-Decisões aplicadas: `D-01` a `D-17` (ver [DECISOES.md](DECISOES.md)).
+Decisões aplicadas: `D-01` a `D-29` (ver [DECISOES.md](DECISOES.md)).
 
 | Seção | Situação |
 |---|---|
-| 1.1 – 1.5 | ✅ Escrita · RF001 a RF015 · 3 pendências ainda afetam 1.5 |
+| 1.1 – 1.5 | ✅ **Completa** — RF001 a RF016, NF001 a NF004, regras de negócio |
 | 2.1 Diagrama geral | ⚠️ Texto escrito, **diagrama a redesenhar** (`MD-07`) |
 | 2.2 Casos de uso | ⚠️ Texto escrito, **diagrama ausente** |
-| 2.3 Diagrama de classes | ✅ Escrita e diagramada · pendências `MD-*`, `DV-*` |
-| 2.4 Modelo relacional | ✅ Escrita e diagramada · pendências `MD-*`, `TP-*` |
+| 2.3 Diagrama de classes | ⚠️ Texto escrito, **diagrama a redesenhar** (`MD-07`) |
+| 2.4 Modelo relacional | ⚠️ Texto e convenções escritos, **diagrama a redesenhar** (`MD-07`) |
 | 3 Interfaces | ❌ Só o título — nada escrito |
 | 4 Implementação (protótipo, DDL, DML, consultas) | ❌ Só o título — nada escrito |
 | 5 Referências | ❌ Citações usadas no texto (Visure Solutions, Castro 2016, Brito 2010, Clemente 2024, Ramos 2013, Braz Junior 2007, Araújo 2008) mas a lista não existe |
@@ -188,9 +188,8 @@ as quantidades de parcelas admitidas para o valor do pedido.
 prioridade: Importante.
 
 O sistema deve proporcionar ao cliente buscar produtos por seus atributos (nome, cor,
-modelo, descrição).
+categoria, modelagem, descrição).
 
-<!-- PENDENCIA: MD-01 — "modelo" é texto livre; sem entidade Categoria o filtro não fecha -->
 
 #### 1.4.1.6 [RF006] Classificar produtos
 
@@ -206,7 +205,6 @@ prioridade: Importante.
 O sistema deve apresentar os "cards" de produto na tela inicial por intersecções de
 produtos com categorias semelhantes pré-definidas.
 
-<!-- PENDENCIA: MD-01 — "categorias pré-definidas" não existem no modelo de dados -->
 
 #### 1.4.1.8 [RF008] Confirmar pagamento
 
@@ -254,10 +252,10 @@ ele deve ser exibido junto ao estado do pedido.
 prioridade: Essencial.
 
 O sistema deve permitir ao administrador cadastrar, salvar, alterar, cancelar, excluir e
-pesquisar os cadastros de marca, categoria, produto, variante de produto, imagens de
-variante, faixas de frete e usuários, conforme as funções descritas na seção 1.4.3.
+pesquisar os cadastros de categoria, produto, variante de produto, imagens de variante,
+faixas de frete e usuários, conforme as funções descritas na seção 1.4.3.
 
-#### 1.4.1.13 [RF013] Processar expedição do pedido
+#### 1.4.1.13 [RF013] Processar pedido
 
 prioridade: Essencial.
 
@@ -268,8 +266,12 @@ respectivo estado ao longo do fluxo de expedição: **separado**, **enviado** e
 O avanço para o estado "enviado" exige o registro do código de rastreio, e a data do
 envio deve ser gravada automaticamente.
 
+O sistema deve permitir ainda o registro das ocorrências de **cancelamento** — antes do
+envio — e de **devolução** — após o envio —, solicitadas pelo cliente por canal de
+atendimento.
+
 O administrador não pode alterar itens, quantidades, preços, frete ou valores de pedido
-finalizado — apenas avançar o estado e registrar os dados de expedição.
+finalizado — apenas avançar o estado e registrar os dados de expedição e ocorrências.
 
 #### 1.4.1.14 [RF014] Recuperar senha
 
@@ -292,6 +294,19 @@ do pedido, e no envio do pedido, contendo o código de rastreio.
 
 O envio das mensagens deve ocorrer de forma assíncrona, de modo que uma falha no serviço
 de e-mail não impeça a confirmação do pedido.
+
+#### 1.4.1.16 [RF016] Registrar entrada de estoque
+
+prioridade: Essencial.
+
+O sistema deve permitir ao administrador registrar entradas de estoque, informando a
+variante, a quantidade, o motivo (compra, devolução ou ajuste) e observação opcional.
+
+A tela deve permitir o registro de **várias variantes do mesmo produto em uma única
+submissão**, informando a quantidade de cada tamanho, gerando um registro de entrada por
+variante com quantidade informada.
+
+Cada registro de entrada atualiza a quantidade em estoque da respectiva variante.
 
 
 
@@ -319,7 +334,6 @@ prioridade: Essencial.
 O sistema deve implementar um banco de dados gratuito, que permita o estabelecimento de
 um histórico íntegro.
 
-<!-- PENDENCIA: TP-07 — sem timestamps de auditoria a premissa de histórico íntegro fica sem base -->
 
 #### 1.4.2.3 [NF003] Escalabilidade
 
@@ -379,37 +393,52 @@ documento de requisitos:
 Os cadastros são os dados que irão alimentar o sistema a fim de registrar informações
 inerentes ao funcionamento do estabelecimento.
 
-1. **Usuário:** `@*código`, `*nome`, `*#CPF`, `*#telefone`, `*endereco`, `*cidade`,
-   `*uf`, `*#cep`, `*papel`, `*situacao`, `*email`, `*#senha`
-2. **Produto:** `@*código`, `*nome`, `*descrição`, `*modelo`, `*valor`, `composição`,
-   `cuidados`, `envioDevolucao`
-3. **Variante Produto:** `@*código`, `*#sku`, `*cor`, `*tamanho`, `*situacao`,
+1. **Usuário:** `@*código`, `*nome`, `*#CPF`, `*#telefone`, `*endereco`, `*numero`,
+   `complemento`, `*cidade`, `*uf`, `*#cep`, `*papel`, `*situacao`, `*email`, `*#senha`,
+   `@*consentimentoEm`, `@*versaoTermos`
+2. **Categoria:** `@*código`, `*nome`, `*descrição`
+3. **Produto:** `@*código`, `*nome`, `*descrição`, `*@codCategoria`, `modelagem`,
+   `*valor`, `composição`, `cuidados`, `envioDevolucao`
+4. **Variante Produto:** `@*código`, `*#sku`, `*cor`, `*tamanho`, `*situacao`,
    `*qtdEstoque`
-4. **Marca:** `@*código`, `*nome`, `*descrição`
 5. **Imagem da Variante:** `@*código`, `*@codVarianteProd`, `*arquivo`, `*ordem`
 6. **Faixa de Frete:** `@*código`, `*cepInicial`, `*cepFinal`, `*valor`, `*prazoDias`
 7. **Item de Carrinho:** `@*código`, `*@codUsuario`, `*@codVarianteProd`, `*qtde`
 
-<!-- PENDENCIA: DV-03 — dataNasc, complemento e numeroResidencia existem no relacional e faltam aqui -->
-<!-- PENDENCIA: MD-01 — falta Categoria · MD-02 — falta imagem do produto -->
-<!-- PENDENCIA: RQ-09 — falta registro do consentimento LGPD (data/hora/versão dos termos) -->
+A **categoria** classifica o tipo de peça (Camisetas, Moletons, Acessórios) e é exclusiva:
+um produto pertence a uma categoria, e uma categoria reúne vários produtos. A
+**modelagem** descreve o corte da peça (regular, oversized, cropped) e é independente da
+categoria, podendo repetir-se entre categorias distintas — razão pela qual não constitui
+subcategoria. Não há hierarquia de categorias.
+
 
 #### B) MOVIMENTAÇÕES
 
 As movimentações são:
 
-1. **Venda:** `@*código`, `*qntProduto`, `***frete`, `***valorTotal`,
-   `*@codVarianteProd`, `*@codUsuario`, `*situacao`, `codigoRastreio`, `@dataEnvio`
-2. **Pagamento:** `@*código`, `*@codVenda`, `*metodo`, `*qtdeParcelas`, `*valor`,
+1. **Venda:** `@*código`, `*@codUsuario`, `*situacao`, `***frete`, `***valorTotal`,
+   `codigoRastreio`, `@dataEnvio`, `*destinatario`, `*cep`, `*endereco`, `*numero`,
+   `complemento`, `*cidade`, `*uf`
+2. **Item de Venda:** `@*código`, `*@codVenda`, `*@codVarianteProd`, `*qtdeVendida`,
+   `***subTotal`
+3. **Pagamento:** `@*código`, `*@codVenda`, `*metodo`, `*qtdeParcelas`, `*valor`,
    `*situacao`, `#idExterno`, `dataConfirmacao`
-3. **Entrada:** `@*código`, `*@codVarianteProd`, `*qntProduto`
+4. **Entrada de Estoque:** `@*código`, `*@codVarianteProd`, `*qtde`, `*motivo`,
+   `observacao`
+
+Os dados de entrega são copiados para a venda no fechamento do pedido, de modo que
+alterações posteriores no cadastro do usuário não alterem pedidos já realizados — mesmo
+princípio adotado para o subtotal dos itens.
+
+A data da venda corresponde à data de criação do registro, e a quantidade total de peças e
+o valor total do pedido são obtidos a partir dos itens, não armazenados na venda.
+
+Cada **entrada de estoque** registra um evento por variante, com a respectiva quantidade;
+não há um registro por unidade física.
 
 Uma venda possui um ou mais pagamentos, um por tentativa de cobrança: uma cobrança
 recusada ou expirada permanece registrada e o cliente pode iniciar outra.
 
-<!-- PENDENCIA: DV-01 — codVarianteProd não pertence a Venda; o item de venda é a associativa "Produtos por Venda" -->
-<!-- PENDENCIA: MD-05 — Entrada não existe nos diagramas -->
-<!-- PENDENCIA: MD-03 — a venda não guarda o endereço de entrega -->
 <!-- PENDENCIA: MD-07 — Pagamento e faixa de frete ainda não estão nos diagramas 2.3 e 2.4 -->
 
 #### C) RELATÓRIOS (dashboard)
@@ -445,16 +474,22 @@ Para este sistema, serão definidas as seguintes regras de negócio abaixo:
 - É exigido ao cliente um cadastro de CPF para realizar uma compra;
 - O usuário pode comprar diversos produtos em uma venda;
 - **LGPD obrigatória:** o cliente deve marcar um checkbox de consentimento de termos de
-  uso antes de finalizar o cadastro;
+  uso antes de finalizar o cadastro, registrando-se a data, a hora e a versão dos termos
+  aceitos;
 - O nível de acesso do usuário é determinado pelo seu **papel** (Admin ou Comprador),
   atributo distinto de sua **situação** (ativo ou inativo): um administrador inativo não
   acessa o sistema, e um comprador inativo não realiza compras;
 - **Histórico inalterável:** o histórico de pedidos finalizados não pode ser apagado ou
   editado pelo cliente. Ao administrador é permitido apenas avançar o estado do pedido e
   registrar dados de expedição (código de rastreio e datas); itens, quantidades, preços,
-  frete e valores são imutáveis para todos os perfis;
+  frete e valores são imutáveis para todos os perfis. **Ressalva:** atendido pedido legal
+  de eliminação de dados pessoais (art. 18 da LGPD), o cadastro do usuário é anonimizado —
+  nome, CPF, e-mail, telefone e endereço são substituídos por valores sem identificação —,
+  preservando-se os pedidos, valores e datas. A conta anonimizada não pode ser reativada.
+  Ficam retidos, pelo prazo legal aplicável, os dados cuja conservação seja exigida por
+  obrigação legal ou necessária ao exercício de direitos em processo judicial,
+  administrativo ou arbitral;
 - O pagamento poderá ser realizado tanto a vista quanto à prazo (crédito);
-- O recebimento do produto é garantido pela Wonner.
 
 **Carrinho**
 
@@ -497,17 +532,25 @@ Para este sistema, serão definidas as seguintes regras de negócio abaixo:
   do administrador;
 - A passagem para `enviado` exige o registro do código de rastreio.
 
+**Arrependimento e devolução**
+
+- Em conformidade com o art. 49 do Código de Defesa do Consumidor, o cliente pode desistir
+  da compra em até **7 dias corridos** contados do recebimento do produto;
+- A solicitação é feita por canal de atendimento e registrada no sistema pelo
+  administrador: `cancelado` quando o pedido ainda não foi enviado, `devolvido` quando já
+  havia sido;
+- O cancelamento de pedido ainda não pago libera a reserva de estoque;
+- O estorno do valor é realizado junto ao provedor de pagamento, cabendo ao sistema
+  registrar a situação `estornado` do respectivo pagamento;
+- A reentrada do item devolvido em estoque é decidida pelo administrador e registrada como
+  entrada, pois peça devolvida pode não estar em condição de revenda.
+
 **Entrega**
 
 - O valor do frete é determinado pela faixa de CEP correspondente ao endereço de entrega;
 - O valor do frete é congelado no pedido no momento do fechamento, não sendo afetado por
   alterações posteriores na tabela de faixas.
 
-<!-- PENDENCIA: RQ-09 — LGPD conflita com histórico inalterável (art. 18, direito de eliminação) -->
-<!-- PENDENCIA: RQ-08 — "inalterável pelo cliente" não diz nada sobre o admin -->
-<!-- PENDENCIA: RQ-10 — falta o direito de arrependimento de 7 dias (CDC art. 49) -->
-<!-- PENDENCIA: RQ-11 — "o recebimento é garantido pela Wonner" não é verificável -->
-<!-- PENDENCIA: RQ-15 — nenhuma regra define se a variante pode ter preço próprio -->
 
 ---
 
@@ -558,9 +601,7 @@ orientado a objetos.
 
 ![Diagrama de classes](diagramas/2.3-diagrama-classes.png)
 
-<!-- PENDENCIA: DV-02 — subTotal:int, DataVenda:char, formaRecebimento:int e
      qteParcelas:int divergem dos tipos do modelo relacional -->
-<!-- PENDENCIA: MD-06 — Marca 1──1..* produto impede cadastrar marca sem produto -->
 
 ## 2.4 DIAGRAMA DO MODELO RELACIONAL
 
@@ -570,11 +611,22 @@ implementação do banco de dados, se tornam tabelas.
 
 ![Modelo relacional](diagramas/2.4-modelo-relacional.png)
 
-<!-- PENDENCIA: TP-01 — valor, subTotal e valorFrete em DOUBLE (dinheiro em ponto flutuante) -->
-<!-- PENDENCIA: TP-02 — tamanho CHAR cabe 1 caractere; "GG" não entra -->
-<!-- PENDENCIA: TP-03 — nomes com espaço: "variante Produto", "venda_has_variante Produto" -->
-<!-- PENDENCIA: TP-05 — dataVenda DATE perde a hora -->
-<!-- PENDENCIA: TP-06 — cpf e email sem UNIQUE -->
+Convenções adotadas na implementação do modelo:
+
+| Aspecto | Convenção |
+|---|---|
+| Nomes de tabela | `snake_case`, no singular |
+| Chave primária | `id` |
+| Chave estrangeira | `<entidade>_id` |
+| Valores monetários | `DECIMAL(10,2)` |
+| Atributos de estado | lista fechada de valores, nunca texto livre |
+| Tamanho da variante | lista fechada: `PP`, `P`, `M`, `G`, `GG`, `XG`, `U` |
+| Datas e horas | `DATETIME`, com `created_at` e `updated_at` em todas as tabelas |
+
+O uso de `DECIMAL` para valores monetários decorre de `DOUBLE` ser um tipo de ponto
+flutuante binário conforme a norma IEEE 754, no qual valores como 0,10 não possuem
+representação exata — o que faz somas sucessivas de centavos acumularem erro.
+
 
 ---
 
