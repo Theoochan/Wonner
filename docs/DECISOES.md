@@ -338,6 +338,22 @@ com unicidade em (usuário, variante), o que também impede duplicar a mesma var
 - O carrinho exibe o preço vigente, sem congelamento — congelar é papel de
   `venda_item.subTotal`, no fechamento.
 - A reserva de estoque continua ocorrendo apenas no checkout (D-01), nunca no carrinho.
+- **Não há chave estrangeira entre venda e carrinho.** O item de venda é cópia do item de
+  carrinho, não referência a ele: uma chave apontaria para um registro que deixa de existir
+  no instante em que a compra se confirma, e manteria o pedido atrelado a um carrinho que
+  segue sendo alterado. A ligação entre os dois é de processo, executada no checkout, e não
+  aparece no modelo relacional — o que precisa estar dito, por ser a primeira coisa que se
+  procura ao ler o diagrama.
+- **`carrinho_item` e `venda_item` são tabelas distintas**, ainda que de forma semelhante.
+  Unificá-las numa só, com um discriminador, exigiria duas chaves estrangeiras anuláveis e
+  mutuamente exclusivas — que o banco não consegue garantir —, uma coluna de subtotal
+  obrigatória para metade das linhas e proibida para a outra, restrições de unicidade
+  diferentes por tipo de linha, e um filtro em toda consulta de venda, sob pena de somar
+  carrinhos ao faturamento. Sobretudo, impediria expressar a diferença que motiva as duas
+  entidades: o carrinho acompanha o preço vigente do catálogo, o item de venda tem o preço
+  congelado. Forma repetida não é duplicação — duplicação é guardar o mesmo fato duas
+  vezes, e aqui os fatos são "este usuário quer isto" e "este pedido vendeu isto por este
+  preço".
 
 ---
 
@@ -1048,7 +1064,11 @@ negócio e credencial de acesso.
 | variante_produto | `sku` | código operacional precisa identificar uma variante só |
 | pagamento | `id_externo` | **garante a idempotência da confirmação** (D-02) |
 | carrinho_item | (`usuario_id`, `variante_produto_id`) | impede duplicar a variante no carrinho (D-09) |
-| venda_item | (`venda_id`, `variante_produto_id`) | chave primária composta |
+| venda_item | (`venda_id`, `variante_produto_id`) | impede a mesma variante duas vezes no pedido |
+
+Nas duas últimas, a unicidade é uma **restrição**, não a chave primária: por D-26, toda
+tabela tem `id` próprio, inclusive as associativas — o que também é coerente com a seção
+1.4.3-B, que atribui `código` ao Item de Venda.
 
 **Alternativas descartadas:**
 
@@ -1102,6 +1122,84 @@ artefato e ausentes no outro.
 - A seção 1.4.3-B passa a ter quatro movimentações: Venda, Item de Venda, Pagamento e
   Entrada de Estoque.
 - O cadastro de usuário coleta menos dados pessoais, alinhado ao princípio da necessidade.
+
+---
+
+## D-30 — PHP sem framework, em lugar do Laravel
+**Pendência:** — (decisão de projeto) · **Data:** 2026-08-17
+
+**Contexto:** o repositório havia sido iniciado a partir do starter kit do Laravel
+(Livewire, Flux, Fortify). Avaliou-se, porém, que o framework concentra abstrações cujo
+funcionamento interno é desconhecido por quem desenvolve, o que produziria dependência de
+assistência externa para diagnosticar qualquer comportamento inesperado — e, num trabalho
+acadêmico, compromete tanto o aprendizado quanto a capacidade de sustentar o próprio código
+em banca. Acrescente-se o prazo: aprender o framework e construir o sistema simultaneamente
+não caberia no cronograma.
+
+**Decisão:** o sistema é implementado em **PHP sem framework**, preservando integralmente a
+arquitetura definida neste documento. Composer é utilizado apenas para carregamento
+automático de classes (PSR-4), sem framework de aplicação. O acesso a dados é feito com PDO
+e consultas preparadas.
+
+**Alternativas descartadas:**
+
+- *Laravel com o starter kit já configurado.* Entregaria autenticação, migrações, ORM,
+  filas e agendador prontos. Nada disso, porém, é exigido pelo escopo em sua forma
+  completa: não há e-mail no MVP (D-14), não se usa 2FA nem passkeys, e o DDL precisa ser
+  escrito de todo modo por constar da seção 4.2. O ganho de tempo pressupõe domínio do
+  framework, que não existe.
+- *Micro-framework (roteador e injeção de dependência de terceiros).* Reduziria o
+  encanamento a escrever, ao custo de reintroduzir comportamento não transparente
+  exatamente na camada que se deseja compreender.
+
+**Consequências:**
+
+- Cinco proteções que o framework oferecia passam a ser responsabilidade explícita da
+  aplicação: consultas preparadas contra injeção de SQL, `password_hash`/`password_verify`
+  para senhas, escape de saída contra XSS, token anti-CSRF nos formulários e regeneração do
+  identificador de sessão no login.
+- Estrutura de diretórios, roteamento, camada de dados, validação e tratamento de erro
+  passam a ser decisões explícitas do projeto, e não convenções herdadas.
+- O DDL escrito à mão é o mesmo artefato exigido pela seção 4.2 do documento — código e
+  documentação deixam de ser trabalhos separados.
+- Nenhuma das decisões D-01 a D-29 é afetada: todas tratam de modelo de dados, regras de
+  negócio e escopo, independentes de tecnologia.
+- O requisito NF001 permanece válido: Tailwind CSS, DaisyUI e Alpine.js são tecnologias de
+  interface, sem vínculo com o framework de aplicação.
+- O código Blade produzido anteriormente (branch `design/homepage-1b`) permanece como
+  referência de marcação e estilo, portável para template PHP sem alteração de CSS.
+
+---
+
+## D-31 — Um pedido pendente por cliente
+**Pendência:** RQ-20 · **Data:** 2026-08-17
+
+**Contexto:** como o carrinho permanece intacto durante o checkout (D-09), nada impedia o
+cliente de iniciar um checkout, não pagar, e iniciar outro com os mesmos itens. Duas vendas
+em `aguardando_pagamento` reservariam a mesma peça, travando o estoque em dobro até as duas
+expirarem. Numa coleção de 24 peças, poucos clientes repetindo isso esgotariam o catálogo
+sem nenhuma venda ter ocorrido.
+
+**Decisão:** um cliente pode ter no máximo **um** pedido em `aguardando_pagamento`. Ao
+iniciar um novo checkout, o pedido pendente anterior é levado a `cancelado` e sua reserva
+liberada, na mesma transação em que o novo pedido é criado e reserva.
+
+**Alternativas descartadas:**
+
+- *Reaproveitar o pedido pendente, devolvendo o cliente ao checkout em andamento.* Nunca
+  haveria duas reservas, mas o pedido pendente é uma cópia do carrinho de antes: se o
+  cliente voltou justamente para trocar um tamanho, veria o pedido antigo, sem a alteração.
+  Quebraria a regra de que o pedido é a cópia do carrinho **no momento do checkout**.
+- *Permitir múltiplos pedidos pendentes.* É o defeito que a decisão corrige.
+
+**Consequências:**
+
+- A regra "o pedido é uma cópia do carrinho naquele momento" passa a valer sem exceção.
+- O cancelamento e a criação precisam ocorrer na mesma transação, para que o estoque não
+  fique momentaneamente reservado em dobro nem liberado indevidamente.
+- Pedidos cancelados por esse motivo permanecem no histórico, como qualquer cancelamento.
+- Convém um índice por `venda (usuario_id, situacao)`, para localizar o pendente do cliente
+  ao iniciar o checkout.
 
 ---
 

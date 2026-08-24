@@ -18,20 +18,22 @@ Prioridade: 🔴 bloqueia · 🟡 importante · ⚪ pode esperar
 
 ---
 
-## Aguardando (modelo de dados)
+## Aguardando (execução)
 
-### MD-07 🟡 Redesenhar os diagramas 2.1, 2.3 e 2.4
-Os diagramas de classes e relacional ainda não contêm:
-`pagamento` (D-02) · reserva de estoque com expiração de 15 min (D-01, D-08) ·
-faixas de frete (D-04) · `carrinho_item` (D-09) · imagens por variante (D-08) ·
-`telefone` em usuário e `sku` em variante (D-08) · campos descritivos do produto (D-08) ·
-`categoria` e `modelagem` (D-21) · endereço de entrega na venda (D-22) ·
-`entrada_estoque` (D-23) · remoção de `marca` (D-24).
-E o diagrama geral (2.1) precisa refletir os cadastros e movimentações novos e os cinco
-relatórios definidos em D-17.
-**Fazer:** redesenhar 2.1, 2.3 e 2.4.
+### DG-01 🟡 Substituir as três imagens de diagrama
+As especificações estão escritas no `TCC.md` (2.1, 2.3.1 e 2.4.1) e conferem com as
+30 decisões. Falta reproduzi-las nas ferramentas e trocar os PNG em `docs/diagramas/`:
 
----
+- **2.1 Diagrama geral** — árvore de módulos (6 cadastros, 4 movimentações, 5 relatórios)
+- **2.3 Diagrama de classes** — 11 classes, operações próprias e multiplicidades (Astah)
+- **2.4 Modelo relacional** — 11 relações, chaves e restrições (MySQL Workbench)
+
+O diagrama Mermaid em 2.4.1 serve para conferir o modelo antes de redesenhar.
+
+### DG-02 ⚪ Diagrama de casos de uso ausente
+A seção 2.2 tem apenas o parágrafo teórico, e a 1.4.1 afirma que cada requisito "inclui
+o caso de uso associado" — nenhum RF cita. Com os 16 RF definidos, é montável.
+**Fazer:** desenhar o diagrama e associar cada RF ao seu caso de uso.
 
 ## Aguardando (correções no design)
 

@@ -26,15 +26,15 @@ Felipe T. Rodrigues
 
 ## Estado do documento
 
-Decisões aplicadas: `D-01` a `D-29` (ver [DECISOES.md](DECISOES.md)).
+Decisões aplicadas: `D-01` a `D-30` (ver [DECISOES.md](DECISOES.md)).
 
 | Seção | Situação |
 |---|---|
 | 1.1 – 1.5 | ✅ **Completa** — RF001 a RF016, NF001 a NF004, regras de negócio |
-| 2.1 Diagrama geral | ⚠️ Texto escrito, **diagrama a redesenhar** (`MD-07`) |
+| 2.1 Diagrama geral | ✅ Especificada · imagem a substituir (`DG-01`) |
 | 2.2 Casos de uso | ⚠️ Texto escrito, **diagrama ausente** |
-| 2.3 Diagrama de classes | ⚠️ Texto escrito, **diagrama a redesenhar** (`MD-07`) |
-| 2.4 Modelo relacional | ⚠️ Texto e convenções escritos, **diagrama a redesenhar** (`MD-07`) |
+| 2.3 Diagrama de classes | ✅ Especificada · imagem a substituir (`DG-01`) |
+| 2.4 Modelo relacional | ✅ Especificada · imagem a substituir (`DG-01`) |
 | 3 Interfaces | ❌ Só o título — nada escrito |
 | 4 Implementação (protótipo, DDL, DML, consultas) | ❌ Só o título — nada escrito |
 | 5 Referências | ❌ Citações usadas no texto (Visure Solutions, Castro 2016, Brito 2010, Clemente 2024, Ramos 2013, Braz Junior 2007, Araújo 2008) mas a lista não existe |
@@ -403,7 +403,6 @@ inerentes ao funcionamento do estabelecimento.
    `*qtdEstoque`
 5. **Imagem da Variante:** `@*código`, `*@codVarianteProd`, `*arquivo`, `*ordem`
 6. **Faixa de Frete:** `@*código`, `*cepInicial`, `*cepFinal`, `*valor`, `*prazoDias`
-7. **Item de Carrinho:** `@*código`, `*@codUsuario`, `*@codVarianteProd`, `*qtde`
 
 A **categoria** classifica o tipo de peça (Camisetas, Moletons, Acessórios) e é exclusiva:
 um produto pertence a uma categoria, e uma categoria reúne vários produtos. A
@@ -416,14 +415,15 @@ subcategoria. Não há hierarquia de categorias.
 
 As movimentações são:
 
-1. **Venda:** `@*código`, `*@codUsuario`, `*situacao`, `***frete`, `***valorTotal`,
+1. **Item de Carrinho:** `@*código`, `*@codUsuario`, `*@codVarianteProd`, `*qtde`
+2. **Venda:** `@*código`, `*@codUsuario`, `*situacao`, `***frete`, `***valorTotal`,
    `codigoRastreio`, `@dataEnvio`, `*destinatario`, `*cep`, `*endereco`, `*numero`,
    `complemento`, `*cidade`, `*uf`
-2. **Item de Venda:** `@*código`, `*@codVenda`, `*@codVarianteProd`, `*qtdeVendida`,
+3. **Item de Venda:** `@*código`, `*@codVenda`, `*@codVarianteProd`, `*qtdeVendida`,
    `***subTotal`
-3. **Pagamento:** `@*código`, `*@codVenda`, `*metodo`, `*qtdeParcelas`, `*valor`,
+4. **Pagamento:** `@*código`, `*@codVenda`, `*metodo`, `*qtdeParcelas`, `*valor`,
    `*situacao`, `#idExterno`, `dataConfirmacao`
-4. **Entrada de Estoque:** `@*código`, `*@codVarianteProd`, `*qtde`, `*motivo`,
+5. **Entrada de Estoque:** `@*código`, `*@codVarianteProd`, `*qtde`, `*motivo`,
    `observacao`
 
 Os dados de entrega são copiados para a venda no fechamento do pedido, de modo que
@@ -439,7 +439,6 @@ não há um registro por unidade física.
 Uma venda possui um ou mais pagamentos, um por tentativa de cobrança: uma cobrança
 recusada ou expirada permanece registrada e o cliente pode iniciar outra.
 
-<!-- PENDENCIA: MD-07 — Pagamento e faixa de frete ainda não estão nos diagramas 2.3 e 2.4 -->
 
 #### C) RELATÓRIOS (dashboard)
 
@@ -573,8 +572,32 @@ visualização e o entendimento das funcionalidades do sistema.
 
 ![Diagrama geral do sistema](diagramas/2.1-diagrama-geral.png)
 
-<!-- PENDENCIA: MD-07 — o diagrama precisa ser redesenhado: cadastros e movimentações
-     novos, e os cinco relatórios definidos em D-17 -->
+```mermaid
+flowchart TB
+    W[Wonner]
+    W --> C[Cadastros]
+    W --> M[Movimentações]
+    W --> R[Relatórios]
+
+    C --> C1[Usuário]
+    C --> C2[Categoria]
+    C --> C3[Produto]
+    C --> C4[Variante Produto]
+    C --> C5[Imagem da Variante]
+    C --> C6[Faixa de Frete]
+
+    M --> M1[Carrinho]
+    M --> M2[Venda]
+    M --> M3[Pagamento]
+    M --> M4[Entrada de Estoque]
+
+    R --> R1[Vendas por Cliente]
+    R --> R2[Produtos Vendidos]
+    R --> R3[Vendas por Tamanho]
+    R --> R4[Estoque de Produtos]
+    R --> R5[Pagamentos Recebidos]
+```
+
 
 ## 2.2 DIAGRAMA DE CASOS DE USO
 
@@ -601,6 +624,84 @@ orientado a objetos.
 
 ![Diagrama de classes](diagramas/2.3-diagrama-classes.png)
 
+### 2.3.1 Classes, atributos, operações e multiplicidades
+
+Atributos de cada classe, com visibilidade privada. Os atributos de auditoria
+(`criadoEm`, `alteradoEm`), presentes em todas as relações do modelo relacional, são
+omitidos do diagrama de classes por serem infraestrutura, não regra de negócio.
+
+| Classe | Atributos |
+|---|---|
+| **Usuario** | `nome : String` · `cpf : String` · `telefone : String` · `email : String` · `senha : String` · `cep : String` · `endereco : String` · `numero : String` · `complemento : String` · `cidade : String` · `uf : String` · `papel : Papel` · `situacao : SituacaoUsuario` · `consentimentoEm : DateTime` · `versaoTermos : String` |
+| **Categoria** | `nome : String` · `descricao : String` |
+| **Produto** | `nome : String` · `descricao : String` · `modelagem : Modelagem` · `valor : Decimal` · `composicao : String` · `cuidados : String` · `envioDevolucao : String` |
+| **VarianteProduto** | `sku : String` · `cor : String` · `tamanho : Tamanho` · `qtdEstoque : int` · `situacao : SituacaoVariante` |
+| **ImagemVariante** | `arquivo : String` · `ordem : int` |
+| **FaixaFrete** | `cepInicial : String` · `cepFinal : String` · `valor : Decimal` · `prazoDias : int` |
+| **CarrinhoItem** | `qtde : int` |
+| **Venda** | `situacao : SituacaoVenda` · `valorFrete : Decimal` · `destinatario : String` · `cep : String` · `endereco : String` · `numero : String` · `complemento : String` · `cidade : String` · `uf : String` · `reservaExpiraEm : DateTime` · `codigoRastreio : String` · `dataEnvio : DateTime` |
+| **VendaItem** | `qtdeVendida : int` · `subTotal : Decimal` |
+| **Pagamento** | `metodo : MetodoPagamento` · `qtdeParcelas : int` · `valor : Decimal` · `situacao : SituacaoPagamento` · `idExterno : String` · `dataConfirmacao : DateTime` |
+| **EntradaEstoque** | `qtde : int` · `motivo : MotivoEntrada` |
+
+**Enumerações**
+
+| Tipo | Valores |
+|---|---|
+| `Papel` | `admin`, `comprador` |
+| `SituacaoUsuario` | `ativo`, `inativo`, `anonimizado` |
+| `Modelagem` | `regular`, `oversized`, `cropped` |
+| `Tamanho` | `PP`, `P`, `M`, `G`, `GG`, `XG`, `U` |
+| `SituacaoVariante` | `ativo`, `inativo` |
+| `SituacaoVenda` | `aguardando_pagamento`, `pago`, `separado`, `enviado`, `entregue`, `expirado`, `cancelado`, `devolvido` |
+| `MetodoPagamento` | `pix`, `credito`, `debito` |
+| `SituacaoPagamento` | `iniciado`, `aguardando`, `aprovado`, `recusado`, `expirado`, `estornado` |
+| `MotivoEntrada` | `compra`, `devolucao`, `ajuste` |
+
+`VendaItem` e `CarrinhoItem` são **classes associativas**: a primeira qualifica a
+associação entre Venda e VarianteProduto, registrando a quantidade e o subtotal congelado;
+a segunda qualifica a associação entre Usuario e VarianteProduto, registrando a quantidade
+pretendida.
+
+Todas as classes de cadastro implementam as operações previstas na seção 1.4.3 —
+`cadastrar()`, `salvar()`, `alterar()`, `cancelar()`, `excluir()` e `pesquisar()`. A tabela
+abaixo relaciona apenas as operações **próprias** de cada classe, que expressam suas regras
+de negócio.
+
+| Classe | Operações próprias |
+|---|---|
+| Usuario | `autenticar()`, `redefinirSenha()`, `anonimizar()` |
+| Categoria | — |
+| Produto | `precoFormatado()` |
+| VarianteProduto | `disponivel()`, `quantidadeDisponivel()`, `baixarEstoque()`, `reporEstoque()` |
+| ImagemVariante | — |
+| FaixaFrete | `calcularPara(cep)` |
+| CarrinhoItem | `incluir()`, `alterarQuantidade()`, `remover()` |
+| Venda | `abrirCheckout()`, `calcularTotal()`, `reservarEstoque()`, `liberarReserva()`, `avancarSituacao()`, `registrarEnvio()`, `cancelar()`, `devolver()` |
+| VendaItem | `calcularSubtotal()` |
+| Pagamento | `iniciarCobranca()`, `confirmar()`, `recusar()`, `expirar()`, `estornar()`, `parcelasPermitidas()` |
+| EntradaEstoque | `registrar()` |
+
+Multiplicidades:
+
+| Origem | Multiplicidade | Destino |
+|---|---|---|
+| Categoria | 1 ── 0..* | Produto |
+| Produto | 1 ── 1..* | VarianteProduto |
+| VarianteProduto | 1 ── 0..* | ImagemVariante |
+| VarianteProduto | 1 ── 0..* | EntradaEstoque |
+| Usuario | 1 ── 0..* | CarrinhoItem |
+| Usuario | 1 ── 0..* | Venda |
+| Venda | 1 ── 1..* | VendaItem |
+| Venda | 1 ── 0..* | Pagamento |
+| VarianteProduto | 1 ── 0..* | CarrinhoItem |
+| VarianteProduto | 1 ── 0..* | VendaItem |
+
+A multiplicidade `1..*` entre Produto e VarianteProduto expressa que um produto sem
+variante não é vendável. Já Categoria admite `0..*` produtos, de modo que uma categoria
+possa ser cadastrada antes de existir produto nela. `Venda 1 ── 1..* VendaItem` decorre de
+o pedido nascer de uma cópia dos itens do carrinho, nunca vazio.
+
      qteParcelas:int divergem dos tipos do modelo relacional -->
 
 ## 2.4 DIAGRAMA DO MODELO RELACIONAL
@@ -626,6 +727,195 @@ Convenções adotadas na implementação do modelo:
 O uso de `DECIMAL` para valores monetários decorre de `DOUBLE` ser um tipo de ponto
 flutuante binário conforme a norma IEEE 754, no qual valores como 0,10 não possuem
 representação exata — o que faz somas sucessivas de centavos acumularem erro.
+
+### 2.4.1 Especificação das relações
+
+```mermaid
+erDiagram
+    usuario {
+        int id PK
+        varchar nome
+        varchar cpf UK
+        varchar telefone
+        varchar email UK
+        varchar senha
+        varchar cep
+        varchar endereco
+        varchar numero
+        varchar complemento "nulo"
+        varchar cidade
+        char uf
+        enum papel "admin|comprador"
+        enum situacao "ativo|inativo|anonimizado"
+        datetime consentimento_em
+        varchar versao_termos
+        datetime created_at
+        datetime updated_at
+    }
+    categoria {
+        int id PK
+        varchar nome UK
+        varchar descricao "nulo"
+        datetime created_at
+        datetime updated_at
+    }
+    produto {
+        int id PK
+        int categoria_id FK
+        varchar nome
+        text descricao
+        enum modelagem "regular|oversized|cropped, nulo"
+        decimal valor "10,2"
+        text composicao "nulo"
+        text cuidados "nulo"
+        text envio_devolucao "nulo"
+        datetime created_at
+        datetime updated_at
+    }
+    variante_produto {
+        int id PK
+        int produto_id FK
+        varchar sku UK
+        varchar cor
+        enum tamanho "PP|P|M|G|GG|XG|U"
+        int qtd_estoque
+        enum situacao "ativo|inativo"
+        datetime created_at
+        datetime updated_at
+    }
+    imagem_variante {
+        int id PK
+        int variante_produto_id FK
+        varchar arquivo
+        tinyint ordem
+        datetime created_at
+        datetime updated_at
+    }
+    faixa_frete {
+        int id PK
+        varchar cep_inicial
+        varchar cep_final
+        decimal valor "10,2"
+        tinyint prazo_dias
+        datetime created_at
+        datetime updated_at
+    }
+    carrinho_item {
+        int id PK
+        int usuario_id FK
+        int variante_produto_id FK
+        smallint qtde
+        datetime created_at
+        datetime updated_at
+    }
+    venda {
+        int id PK
+        int usuario_id FK
+        enum situacao "aguardando_pagamento|pago|separado|enviado|entregue|expirado|cancelado|devolvido"
+        decimal valor_frete "10,2"
+        varchar destinatario
+        varchar cep
+        varchar endereco
+        varchar numero
+        varchar complemento "nulo"
+        varchar cidade
+        char uf
+        datetime reserva_expira_em
+        varchar codigo_rastreio "nulo"
+        datetime data_envio "nulo"
+        datetime created_at
+        datetime updated_at
+    }
+    venda_item {
+        int id PK
+        int venda_id FK
+        int variante_produto_id FK
+        smallint qtde_vendida
+        decimal subtotal "10,2"
+        datetime created_at
+        datetime updated_at
+    }
+    pagamento {
+        int id PK
+        int venda_id FK
+        enum metodo "pix|credito|debito"
+        tinyint qtde_parcelas
+        decimal valor "10,2"
+        enum situacao "iniciado|aguardando|aprovado|recusado|expirado|estornado"
+        varchar id_externo UK "nulo"
+        datetime data_confirmacao "nulo"
+        datetime created_at
+        datetime updated_at
+    }
+    entrada_estoque {
+        int id PK
+        int variante_produto_id FK
+        int qtde
+        enum motivo "compra|devolucao|ajuste"
+        varchar observacao "nulo"
+        datetime created_at
+        datetime updated_at
+    }
+
+    categoria         ||--o{ produto          : classifica
+    produto           ||--|{ variante_produto : possui
+    variante_produto  ||--o{ imagem_variante  : ilustra
+    variante_produto  ||--o{ carrinho_item    : compoe
+    variante_produto  ||--o{ venda_item       : compoe
+    variante_produto  ||--o{ entrada_estoque  : movimenta
+    usuario           ||--o{ carrinho_item    : mantem
+    usuario           ||--o{ venda            : realiza
+    venda             ||--|{ venda_item       : contem
+    venda             ||--o{ pagamento        : recebe
+```
+
+**Restrições de unicidade**
+
+| Relação | Colunas | Finalidade |
+|---|---|---|
+| usuario | `cpf` | chave de negócio: a regra exige CPF para comprar |
+| usuario | `email` | credencial de acesso |
+| categoria | `nome` | evita categorias homônimas |
+| variante_produto | `sku` | o código operacional identifica uma variante só |
+| variante_produto | (`produto_id`, `cor`, `tamanho`) | impede duplicar a mesma combinação |
+| carrinho_item | (`usuario_id`, `variante_produto_id`) | a variante não se repete no carrinho |
+| venda_item | (`venda_id`, `variante_produto_id`) | a variante não se repete no pedido |
+| pagamento | `id_externo` | garante o processamento único da confirmação |
+
+**Regras que o esquema não expressa e a aplicação deve garantir**
+
+1. `pagamento.qtde_parcelas` só pode ser maior que 1 quando `metodo = 'credito'`;
+   PIX e débito são sempre uma parcela.
+2. O número máximo de parcelas é o menor entre 6 e o resultado da divisão do valor do
+   pedido por R$ 50,00.
+3. As faixas de CEP em `faixa_frete` não podem se sobrepor — a verificação ocorre no
+   cadastro, pois não é expressável como restrição de integridade.
+4. `entrada_estoque.qtde` admite valor negativo apenas quando `motivo = 'ajuste'`,
+   caso de correção de contagem.
+5. A quantidade disponível de uma variante é `qtd_estoque` menos a soma das quantidades
+   dos itens de vendas em `aguardando_pagamento` cuja reserva ainda não expirou.
+6. `venda.reserva_expira_em` é preenchida na criação do pedido com quinze minutos à frente;
+   vencido o prazo sem confirmação de pagamento, a venda passa a `expirado`.
+7. A transição para `venda.situacao = 'enviado'` exige `codigo_rastreio` preenchido.
+8. Na confirmação do pagamento, a baixa em `qtd_estoque` e a mudança de situação da venda
+   devem ocorrer na mesma transação. Como a quantidade disponível é calculada descontando
+   as vendas pendentes, executar apenas uma das duas operações faz a disponibilidade
+   aumentar ou diminuir indevidamente.
+9. O cliente pode ter no máximo uma venda em `aguardando_pagamento`; ao iniciar novo
+   checkout, a anterior é cancelada na mesma transação em que a nova é criada.
+10. A verificação de disponibilidade e a criação do pedido devem ocorrer sob bloqueio da
+    variante, de modo que dois clientes concorrentes não reservem a mesma unidade. Sem o
+    bloqueio, ambos leem a mesma quantidade disponível e a reserva torna-se ineficaz
+    justamente sob concorrência, que é quando ela é necessária.
+11. Toda quantidade apresentada ao cliente — inclusive avisos de estoque baixo — é a
+    quantidade **disponível**, nunca `qtd_estoque`, que desconsidera as reservas vigentes.
+
+**Índices recomendados além das chaves e restrições**
+
+`venda(usuario_id, created_at)` para a consulta de pedidos do cliente ·
+`venda(situacao, reserva_expira_em)` para a rotina de expiração ·
+`venda_item(variante_produto_id)` para os relatórios de produtos e tamanhos ·
+`produto(categoria_id)` para a navegação do catálogo.
 
 
 ---
