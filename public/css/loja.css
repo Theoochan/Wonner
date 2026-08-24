@@ -1,0 +1,100 @@
+/* Provisório — só para o esqueleto ser legível.
+   A identidade visual da Wonner entra quando as telas reais existirem. */
+
+:root {
+    --navy: #0f1e3d;
+    --cream: #f4ecd8;
+    --sand: #e8dcc0;
+    --brick: #a63a2a;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--navy);
+    font: 16px/1.6 Georgia, 'Times New Roman', serif;
+}
+
+.topo {
+    background: var(--navy);
+    padding: 20px 32px;
+}
+
+.marca {
+    color: var(--cream);
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: .28em;
+    text-decoration: none;
+}
+
+main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+}
+
+.etiqueta {
+    margin: 0 0 12px;
+    font: 500 11px ui-monospace, monospace;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--brick);
+}
+
+h1 {
+    margin: 0 0 28px;
+    font-size: clamp(28px, 5vw, 42px);
+    line-height: 1.1;
+}
+
+.checklist {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--navy);
+}
+
+.checklist li {
+    padding: 11px 0 11px 28px;
+    border-bottom: 1px solid rgba(15, 30, 61, .18);
+    position: relative;
+}
+
+.checklist li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--brick);
+    font-weight: 700;
+}
+
+code {
+    background: var(--sand);
+    padding: 1px 5px;
+    border-radius: 2px;
+    font: .9em ui-monospace, monospace;
+}
+
+.proximo {
+    margin-top: 32px;
+    font-style: italic;
+    color: rgba(15, 30, 61, .7);
+}
+
+.rodape {
+    border-top: 1px solid rgba(15, 30, 61, .2);
+    padding: 20px 32px;
+    font: 500 11px ui-monospace, monospace;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+
+.erro {
+    text-align: center;
+    padding-top: 96px;
+}
+
+.erro a { color: var(--brick); }
