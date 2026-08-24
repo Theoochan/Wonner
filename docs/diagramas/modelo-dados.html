@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modelo de Dados Wonner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Libre+Caslon+Text:ital@0;1&display=swap">
+
+<style>
+  :root {
+    --ground:      #e9edf3;
+    --surface:     #ffffff;
+    --surface-alt: #f4f6fa;
+    --ink:         #0f1e3d;
+    --ink-soft:    #55637d;
+    --ink-faint:   #8b96a9;
+    --rule:        #ccd5e2;
+    --rule-soft:   #e2e8f1;
+    --steel:       #3d5a80;
+    --brick:       #a63a2a;
+    --pk-bg:       #0f1e3d;
+    --pk-fg:       #ffffff;
+    --shadow:      0 1px 2px rgba(15, 30, 61, .06), 0 8px 24px rgba(15, 30, 61, .05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0a1120;
+      --surface:     #121d33;
+      --surface-alt: #17243d;
+      --ink:         #dfe5f0;
+      --ink-soft:    #97a4bd;
+      --ink-faint:   #6b7997;
+      --rule:        #29385a;
+      --rule-soft:   #1d2a45;
+      --steel:       #7f9fc9;
+      --brick:       #e0836f;
+      --pk-bg:       #f4ecd8;
+      --pk-fg:       #0f1e3d;
+      --shadow:      0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0a1120;
+    --surface:     #121d33;
+    --surface-alt: #17243d;
+    --ink:         #dfe5f0;
+    --ink-soft:    #97a4bd;
+    --ink-faint:   #6b7997;
+    --rule:        #29385a;
+    --rule-soft:   #1d2a45;
+    --steel:       #7f9fc9;
+    --brick:       #e0836f;
+    --pk-bg:       #f4ecd8;
+    --pk-fg:       #0f1e3d;
+    --shadow:      0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Menlo, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 20px 96px;
+  }
+
+  /* ── cabeçalho ───────────────────────────────── */
+
+  header {
+    padding: 56px 0 28px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .eyebrow {
+    font-family: 'Oswald', 'Arial Narrow', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+  }
+
+  h1 {
+    font-family: 'Oswald', 'Arial Narrow', sans-serif;
+    font-size: clamp(30px, 5vw, 46px);
+    font-weight: 600;
+    letter-spacing: .01em;
+    line-height: 1.05;
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+
+  .lede {
+    font-family: 'Libre Caslon Text', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 62ch;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    margin-top: 24px;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* ── legenda ─────────────────────────────────── */
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 11.5px;
+    color: var(--ink-soft);
+  }
+
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+
+  /* ── índice ──────────────────────────────────── */
+
+  nav.rail {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--ground);
+    border-bottom: 1px solid var(--rule);
+    padding: 10px 0;
+    overflow-x: auto;
+  }
+
+  nav.rail ul {
+    display: flex;
+    gap: 6px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+  }
+
+  nav.rail a {
+    display: block;
+    padding: 5px 9px;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 2px;
+  }
+
+  nav.rail a:hover,
+  nav.rail a:focus-visible {
+    color: var(--ink);
+    border-color: var(--rule);
+    background: var(--surface);
+    outline: none;
+  }
+
+  /* ── grupos ──────────────────────────────────── */
+
+  .group { margin-top: 48px; }
+
+  .group-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .group-head h2 {
+    font-family: 'Oswald', 'Arial Narrow', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .group-head .count {
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: .1em;
+  }
+
+  .group-head .line {
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 18px;
+  }
+
+  /* ── cartão de entidade ──────────────────────── */
+
+  .entity {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    scroll-margin-top: 64px;
+  }
+
+  .entity > h3 {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+    padding: 11px 14px;
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: .02em;
+  }
+
+  .entity > h3 em {
+    font-family: 'Oswald', sans-serif;
+    font-style: normal;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+
+  .cols { border-collapse: collapse; width: 100%; }
+
+  .cols td {
+    padding: 5px 14px;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: top;
+    font-size: 12.5px;
+  }
+
+  .cols tr:last-child td { border-bottom: 0; }
+
+  .cols .n { white-space: nowrap; }
+  .cols .t { color: var(--ink-soft); font-size: 11.5px; }
+  .cols .k { text-align: right; white-space: nowrap; }
+
+  .nullable { color: var(--ink-faint); }
+
+  /* ── marcadores de chave ─────────────────────── */
+
+  .b {
+    display: inline-block;
+    padding: 1px 5px;
+    margin-left: 3px;
+    border-radius: 2px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    line-height: 1.5;
+    vertical-align: 1px;
+  }
+
+  .b-pk { background: var(--pk-bg); color: var(--pk-fg); }
+  .b-fk { border: 1px solid var(--steel); color: var(--steel); }
+  .b-uk { border: 1px solid var(--brick); color: var(--brick); }
+  .b-nl { border: 1px dotted var(--ink-faint); color: var(--ink-faint); }
+
+  /* ── seções de referência ────────────────────── */
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    box-shadow: var(--shadow);
+    padding: 20px 22px;
+    scroll-margin-top: 64px;
+  }
+
+  .panel h2 {
+    font-family: 'Oswald', 'Arial Narrow', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    margin: 0 0 4px;
+  }
+
+  .panel .sub {
+    font-family: 'Libre Caslon Text', Georgia, serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+    max-width: 68ch;
+  }
+
+  .scroller { overflow-x: auto; }
+
+  table.ref {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 480px;
+  }
+
+  table.ref th {
+    text-align: left;
+    font-family: 'Oswald', sans-serif;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding: 0 14px 7px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  table.ref td {
+    padding: 7px 14px 7px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    font-size: 12.5px;
+    vertical-align: top;
+  }
+
+  table.ref tr:last-child td { border-bottom: 0; }
+  table.ref td:last-child, table.ref th:last-child { padding-right: 0; }
+  table.ref .why { color: var(--ink-soft); font-family: 'Libre Caslon Text', Georgia, serif; font-size: 13.5px; }
+
+  figure { margin: 0; }
+
+  figure svg {
+    display: block;
+    width: 100%;
+    max-width: 880px;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  figcaption {
+    font-family: 'Libre Caslon Text', Georgia, serif;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 70ch;
+    margin: 18px auto 0;
+  }
+
+  .erbox      { fill: var(--surface-alt); stroke: currentColor; stroke-width: 1.2; }
+  .erbox-iso  { fill: none; stroke: currentColor; stroke-width: 1.2; stroke-dasharray: 5 4; }
+  .erline     { stroke: currentColor; stroke-width: 1.1; fill: none; }
+  .erlabel    { font: 500 13px 'JetBrains Mono', monospace; fill: currentColor; }
+  .ercard     { font: 500 10.5px 'JetBrains Mono', monospace; fill: var(--brick); }
+  .erverb     { font: italic 11px 'Libre Caslon Text', Georgia, serif; fill: var(--ink-faint); }
+  .ernote     { font: italic 10.5px 'Libre Caslon Text', Georgia, serif; fill: var(--ink-faint); }
+  .erflow     { stroke: var(--steel); stroke-width: 1.4; stroke-dasharray: 6 4; fill: none; }
+  .erflowlabel{ font: 500 10.5px 'JetBrains Mono', monospace; fill: var(--steel); }
+
+  ol.rules { margin: 0; padding-left: 22px; }
+
+  ol.rules li {
+    font-family: 'Libre Caslon Text', Georgia, serif;
+    font-size: 14.5px;
+    line-height: 1.55;
+    margin-bottom: 11px;
+    max-width: 74ch;
+  }
+
+  ol.rules code, .panel code, .cols code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .88em;
+    background: var(--surface-alt);
+    border: 1px solid var(--rule-soft);
+    border-radius: 2px;
+    padding: 0 4px;
+  }
+
+  .stack { display: flex; flex-direction: column; gap: 18px; margin-top: 48px; }
+
+  footer {
+    margin-top: 56px;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 24px;
+  }
+
+  a { color: var(--steel); }
+  a:focus-visible { outline: 2px solid var(--brick); outline-offset: 2px; }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Wonner · Projeto Integrador · IFPR Umuarama</p>
+    <h1>Modelo de dados para conferência</h1>
+    <p class="lede">
+      Onze relações, com tipos, chaves e restrições, consolidando as trinta decisões
+      registradas. Esta é a referência para redesenhar o diagrama de classes no Astah e o
+      modelo relacional no MySQL&nbsp;Workbench.
+    </p>
+    <div class="meta">
+      <span>11 relações</span>
+      <span>9 enumerações</span>
+      <span>10 relacionamentos</span>
+      <span>8 restrições de unicidade</span>
+      <span>7 regras de aplicação</span>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span><b class="b b-pk">PK</b> chave primária</span>
+    <span><b class="b b-fk">FK</b> chave estrangeira</span>
+    <span><b class="b b-uk">UK</b> restrição de unicidade</span>
+    <span><b class="b b-nl">nulo</b> aceita ausência de valor</span>
+    <span>Toda relação tem <code>created_at</code> e <code>updated_at</code></span>
+  </div>
+
+  <nav class="rail" aria-label="Índice das relações">
+    <ul>
+      <li><a href="#usuario">usuario</a></li>
+      <li><a href="#categoria">categoria</a></li>
+      <li><a href="#produto">produto</a></li>
+      <li><a href="#variante_produto">variante_produto</a></li>
+      <li><a href="#imagem_variante">imagem_variante</a></li>
+      <li><a href="#faixa_frete">faixa_frete</a></li>
+      <li><a href="#carrinho_item">carrinho_item</a></li>
+      <li><a href="#venda">venda</a></li>
+      <li><a href="#venda_item">venda_item</a></li>
+      <li><a href="#pagamento">pagamento</a></li>
+      <li><a href="#entrada_estoque">entrada_estoque</a></li>
+      <li><a href="#enums">enumerações</a></li>
+      <li><a href="#relacionamentos">relacionamentos</a></li>
+      <li><a href="#unicidade">unicidade</a></li>
+      <li><a href="#regras">regras de aplicação</a></li>
+      <li><a href="#indices">índices</a></li>
+    </ul>
+  </nav>
+
+  <!-- ═══════════════ CADASTROS ═══════════════ -->
+
+  <section class="group">
+    <div class="group-head">
+      <h2>Cadastros</h2>
+      <span class="count">6 relações</span>
+      <span class="line"></span>
+    </div>
+
+    <div class="grid">
+
+      <article class="entity" id="usuario">
+        <h3>usuario <em>cliente e administrador</em></h3>
+        <table class="cols">
+          <tr><td class="n">id</td><td class="t">INT</td><td class="k"><b class="b b-pk">PK</b></td></tr>
+          <tr><td class="n">nome</td><td class="t">VARCHAR(100)</td><td class="k"></td></tr>
+          <tr><td class="n">cpf</td><td class="t">VARCHAR(11)</td><td class="k"><b class="b b-uk">UK</b></td></tr>
+          <tr><td class="n">telefone</td><td class="t">VARCHAR(15)</td><td class="k"></td></tr>
+          <tr><td class="n">email</td><td class="t">VARCHAR(100)</td><td class="k"><b class="b b-uk">UK</b></td></tr>
+          <tr><td class="n">senha</td><td class="t">VARCHAR(255)</td><td class="k"></td></tr>
+          <tr><td class="n">cep</td><td class="t">VARCHAR(8)</td><td class="k"></td></tr>
+          <tr><td class="n">endereco</td><td class="t">VARCHAR(100)</td><td class="k"></td></tr>
+          <tr><td class="n">numero</td><td class="t">VARCHAR(10)</td><td class="k"></td></tr>
+          <tr><td class="n nullable">complemento</td><td class="t">VARCHAR(100)</td><td class="k"><b class="b b-nl">nulo</b></td></tr>
+          <tr><td class="n">cidade</td><td class="t">VARCHAR(45)</td><td class="k"></td></tr>
+          <tr><td class="n">uf</td><td class="t">CHAR(2)</td><td class="k"></td></tr>
+          <tr><td class="n">papel</td><td class="t">Papel</td><td class="k"></td></tr>
+          <tr><td class="n">situacao</td><td class="t">SituacaoUsuario</td><td class="k"></td></tr>
+          <tr><td class="n">consentimento_em</td><td class="t">DATETIME</td><td class="k"></td></tr>
+          <tr><td class="n">versao_termos</td><td class="t">VARCHAR(20)</td><td class="k"></td></tr>
+        </table>
+      </article>
+
+      <article class="entity" id="categoria">
+        <h3>categoria <em>tipo de peça</em></h3>
+        <table class="cols">
+          <tr><td class="n">id</td><td class="t">INT</td><td class="k"><b class="b b-pk">PK</b></td></tr>
+          <tr><td class="n">nome</td><td class="t">VARCHAR(45)</td><td class="k"><b class="b b-uk">UK</b></td></tr>
+          <tr><td class="n nullable">descricao</td><td class="t">VARCHAR(255)</td><td class="k"><b class="b b-nl">nulo</b></td></tr>
+        </table>
+      </article>
+
+      <article class="entity" id="produto">
+        <h3>produto <em>peça do catálogo</em></h3>
+        <table class="cols">
+          <tr><td class="n">id</td><td class="t">INT</td><td class="k"><b class="b b-pk">PK</b></td></tr>
+          <tr><td class="n">categoria_id</td><td class="t">INT</td><td class="k"><b class="b b-fk">FK</b></td></tr>
+          <tr><td class="n">nome</td><td class="t">VARCHAR(100)</td><td class="k"></td></tr>
+          <tr><td class="n">descricao</td><td class="t">TEXT</td><td class="k"></td></tr>
+          <tr><td class="n nullable">modelagem</td><td class="t">Modelagem</td><td class="k"><b class="b b-nl">nulo</b></td></tr>
+          <tr><td class="n">valor</td><td class="t">DECIMAL(10,2)</td><td class="k"></td></tr>
+          <tr><td class="n nullable">composicao</td><td class="t">TEXT</td><td class="k"><b class="b b-nl">nulo</b></td></tr>
+          <tr><td class="n nullable">cuidados</td><td class="t">TEXT</td><td class="k"><b class="b b-nl">nulo</b></td></tr>
+          <tr><td class="n nullable">envio_devolucao</td><td class="t">TEXT</td><td class="k"><b class="b b-nl">nulo</b></td></tr>
+        </table>
+      </article>
+
+      <article class="entity" id="variante_produto">
+        <h3>variante_produto <em>cor e tamanho</em></h3>
+        <table class="cols">
+          <tr><td class="n">id</td><td class="t">INT</td><td class="k"><b class="b b-pk">PK</b></td></tr>
+          <tr><td class="n">produto_id</td><td class="t">INT</td><td class="k"><b class="b b-fk">FK</b> <b class="b b-uk">UK</b></td></tr>
+          <tr><td class="n">sku</td><td class="t">VARCHAR(30)</td><td class="k"><b class="b b-uk">UK</b></td></tr>
+          <tr><td class="n">cor</td><td class="t">VARCHAR(45)</td><td class="k"><b class="b b-uk">UK</b></td></tr>
+          <tr><td class="n">tamanho</td><td class="t">Tamanho</td><td class="k"><b class="b b-uk">UK</b></td></tr>
+          <tr><td class="n">qtd_estoque</td><td class="t">INT</td><td class="k"></td></tr>
+          <tr><td class="n">situacao</td><td class="t">SituacaoVariante</td><td class="k"></td></tr>
+        </table>
+      </article>
+
+      <article class="entity" id="imagem_variante">
+        <h3>imagem_variante <em>galeria</em></h3>
+        <table class="cols">
+          <tr><td class="n">id</td><td class="t">INT</td><td class="k"><b class="b b-pk">PK</b></td></tr>
+          <tr><td class="n">variante_produto_id</td><td class="t">INT</td><td class="k"><b class="b b-fk">FK</b></td></tr>
+          <tr><td class="n">arquivo</td><td class="t">VARCHAR(255)</td><td class="k"></td></tr>
+          <tr><td class="n">ordem</td><td class="t">TINYINT</td><td class="k"></td></tr>
+        </table>
+      </article>
+
+      <article class="entity" id="faixa_frete">
+        <h3>faixa_frete <em>valor e prazo por CEP</em></h3>
+        <table class="cols">
+          <tr><td class="n">id</td><td class="t">INT</td><td class="k"><b class="b b-pk">PK</b></td></tr>
+          <tr><td class="n">cep_inicial</td><td class="t">VARCHAR(8)</td><td class="k"></td></tr>
+          <tr><td class="n">cep_final</td><td class="t">VARCHAR(8)</td><td class="k"></td></tr>
+          <tr><td class="n">valor</td><td class="t">DECIMAL(10,2)</td><td class="k"></td></tr>
+          <tr><td class="n">prazo_dias</td><td class="t">TINYINT</td><td class="k"></td></tr>
+        </table>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════ MOVIMENTAÇÕES ═══════════════ -->
+
+  <section class="group">
+    <div class="group-head">
+      <h2>Movimentações</h2>
+      <span class="count">5 relações</span>
+      <span class="line"></span>
+    </div>
+
+    <div class="grid">
+
+      <article class="entity" id="carrinho_item">
+        <h3>carrinho_item <em>persistente, não expira</em></h3>
+        <table class="cols">
+          <tr><td class="n">id</td><td class="t">INT</td><td class="k"><b class="b b-pk">PK</b></td></tr>
+          <tr><td class="n">usuario_id</td><td class="t">INT</td><td class="k"><b class="b b-fk">FK</b> <b class="b b-uk">UK</b></td></tr>
+          <tr><td class="n">variante_produto_id</td><td class="t">INT</td><td class="k"><b class="b b-fk">FK</b> <b class="b b-uk">UK</b></td></tr>
+          <tr><td class="n">qtde</td><td class="t">SMALLINT</td><td class="k"></td></tr>
+        </table>
+      </article>
+
+      <article class="entity" id="venda">
+        <h3>venda <em>pedido</em></h3>
+        <table class="cols">
+          <tr><td class="n">id</td><td class="t">INT</td><td class="k"><b class="b b-pk">PK</b></td></tr>
+          <tr><td class="n">usuario_id</td><td class="t">INT</td><td class="k"><b class="b b-fk">FK</b></td></tr>
+          <tr><td class="n">situacao</td><td class="t">SituacaoVenda</td><td class="k"></td></tr>
+          <tr><td class="n">valor_frete</td><td class="t">DECIMAL(10,2)</td><td class="k"></td></tr>
+          <tr><td class="n">destinatario</td><td class="t">VARCHAR(100)</td><td class="k"></td></tr>
+          <tr><td class="n">cep</td><td class="t">VARCHAR(8)</td><td class="k"></td></tr>
+          <tr><td class="n">endereco</td><td class="t">VARCHAR(100)</td><td class="k"></td></tr>
+          <tr><td class="n">numero</td><td class="t">VARCHAR(10)</td><td class="k"></td></tr>
+          <tr><td class="n nullable">complemento</td><td class="t">VARCHAR(100)</td><td class="k"><b class="b b-nl">nulo</b></td></tr>
+          <tr><td class="n">cidade</td><td class="t">VARCHAR(45)</td><td class="k"></td></tr>
+          <tr><td class="n">uf</td><td class="t">CHAR(2)</td><td class="k"></td></tr>
+          <tr><td class="n">reserva_expira_em</td><td class="t">DATETIME</td><td class="k"></td></tr>
+          <tr><td class="n nullable">codigo_rastreio</td><td class="t">VARCHAR(50)</td><td class="k"><b class="b b-nl">nulo</b></td></tr>
+          <tr><td class="n nullable">data_envio</td><td class="t">DATETIME</td><td class="k"><b class="b b-nl">nulo</b></td></tr>
+        </table>
+      </article>
+
+      <article class="entity" id="venda_item">
+        <h3>venda_item <em>classe associativa</em></h3>
+        <table class="cols">
+          <tr><td class="n">id</td><td class="t">INT</td><td class="k"><b class="b b-pk">PK</b></td></tr>
+          <tr><td class="n">venda_id</td><td class="t">INT</td><td class="k"><b class="b b-fk">FK</b> <b class="b b-uk">UK</b></td></tr>
+          <tr><td class="n">variante_produto_id</td><td class="t">INT</td><td class="k"><b class="b b-fk">FK</b> <b class="b b-uk">UK</b></td></tr>
+          <tr><td class="n">qtde_vendida</td><td class="t">SMALLINT</td><td class="k"></td></tr>
+          <tr><td class="n">subtotal</td><td class="t">DECIMAL(10,2)</td><td class="k"></td></tr>
+        </table>
+      </article>
+
+      <article class="entity" id="pagamento">
+        <h3>pagamento <em>uma linha por tentativa</em></h3>
+        <table class="cols">
+          <tr><td class="n">id</td><td class="t">INT</td><td class="k"><b class="b b-pk">PK</b></td></tr>
+          <tr><td class="n">venda_id</td><td class="t">INT</td><td class="k"><b class="b b-fk">FK</b></td></tr>
+          <tr><td class="n">metodo</td><td class="t">MetodoPagamento</td><td class="k"></td></tr>
+          <tr><td class="n">qtde_parcelas</td><td class="t">TINYINT</td><td class="k"></td></tr>
+          <tr><td class="n">valor</td><td class="t">DECIMAL(10,2)</td><td class="k"></td></tr>
+          <tr><td class="n">situacao</td><td class="t">SituacaoPagamento</td><td class="k"></td></tr>
+          <tr><td class="n nullable">id_externo</td><td class="t">VARCHAR(100)</td><td class="k"><b class="b b-uk">UK</b> <b class="b b-nl">nulo</b></td></tr>
+          <tr><td class="n nullable">data_confirmacao</td><td class="t">DATETIME</td><td class="k"><b class="b b-nl">nulo</b></td></tr>
+        </table>
+      </article>
+
+      <article class="entity" id="entrada_estoque">
+        <h3>entrada_estoque <em>um evento por variante</em></h3>
+        <table class="cols">
+          <tr><td class="n">id</td><td class="t">INT</td><td class="k"><b class="b b-pk">PK</b></td></tr>
+          <tr><td class="n">variante_produto_id</td><td class="t">INT</td><td class="k"><b class="b b-fk">FK</b></td></tr>
+          <tr><td class="n">qtde</td><td class="t">INT</td><td class="k"></td></tr>
+          <tr><td class="n">motivo</td><td class="t">MotivoEntrada</td><td class="k"></td></tr>
+          <tr><td class="n nullable">observacao</td><td class="t">VARCHAR(255)</td><td class="k"><b class="b b-nl">nulo</b></td></tr>
+        </table>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════ REFERÊNCIA ═══════════════ -->
+
+  <div class="stack">
+
+    <section class="panel" id="enums">
+      <h2>Enumerações</h2>
+      <p class="sub">
+        Nenhum estado é texto livre. No diagrama de classes, o tipo do atributo é o nome da
+        enumeração; a lista de valores fica numa nota, para não acrescentar nove caixas ao
+        desenho.
+      </p>
+      <div class="scroller">
+        <table class="ref">
+          <thead><tr><th>Tipo</th><th>Valores</th></tr></thead>
+          <tbody>
+            <tr><td>Papel</td><td>admin · comprador</td></tr>
+            <tr><td>SituacaoUsuario</td><td>ativo · inativo · anonimizado</td></tr>
+            <tr><td>Modelagem</td><td>regular · oversized · cropped</td></tr>
+            <tr><td>Tamanho</td><td>PP · P · M · G · GG · XG · U</td></tr>
+            <tr><td>SituacaoVariante</td><td>ativo · inativo</td></tr>
+            <tr><td>SituacaoVenda</td><td>aguardando_pagamento · pago · separado · enviado · entregue · expirado · cancelado · devolvido</td></tr>
+            <tr><td>MetodoPagamento</td><td>pix · credito · debito</td></tr>
+            <tr><td>SituacaoPagamento</td><td>iniciado · aguardando · aprovado · recusado · expirado · estornado</td></tr>
+            <tr><td>MotivoEntrada</td><td>compra · devolucao · ajuste</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" id="relacionamentos">
+      <h2>Relacionamentos</h2>
+      <p class="sub">
+        Dez relacionamentos entre as onze relações. As cardinalidades estão na notação do
+        documento, prontas para transcrever no Astah e no Workbench.
+      </p>
+      <figure>
+        <svg viewBox="0 0 880 600" role="img"
+             aria-label="Diagrama das onze relações do modelo Wonner e suas cardinalidades: a cadeia do catálogo liga categoria a produto e a variante de produto, que se conecta a imagens e a entradas de estoque; do lado transacional, usuário liga-se ao carrinho e à venda, e a venda aos seus itens e pagamentos; uma seta interrompida indica que o item de venda é cópia do item de carrinho, sem vínculo de chave estrangeira; a faixa de frete permanece isolada.">
+
+          <defs>
+            <marker id="seta" viewBox="0 0 10 10" refX="9" refY="5"
+                    markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 1 L 9 5 L 0 9 z" fill="var(--steel)"/>
+            </marker>
+          </defs>
+
+          <!-- ── linhas ────────────────────────────── -->
+
+          <!-- categoria → produto -->
+          <line class="erline" x1="165" y1="60" x2="235" y2="60"/>
+          <text class="ercard" x="171" y="53">1</text>
+          <text class="ercard" x="229" y="53" text-anchor="end">0..*</text>
+          <text class="erverb" x="200" y="76" text-anchor="middle">classifica</text>
+
+          <!-- produto → variante_produto -->
+          <line class="erline" x1="385" y1="68" x2="465" y2="138"/>
+          <text class="ercard" x="392" y="66">1</text>
+          <text class="ercard" x="458" y="148" text-anchor="end">1..*</text>
+          <text class="erverb" x="437" y="91">possui</text>
+
+          <!-- variante_produto → imagem_variante -->
+          <line class="erline" x1="615" y1="142" x2="695" y2="68"/>
+          <text class="ercard" x="620" y="137">1</text>
+          <text class="ercard" x="690" y="76" text-anchor="end">0..*</text>
+          <text class="erverb" x="662" y="122">ilustra</text>
+
+          <!-- variante_produto → entrada_estoque -->
+          <line class="erline" x1="615" y1="158" x2="695" y2="228"/>
+          <text class="ercard" x="620" y="166">1</text>
+          <text class="ercard" x="690" y="224" text-anchor="end">0..*</text>
+          <text class="erverb" x="663" y="182">movimenta</text>
+
+          <!-- usuario → carrinho_item -->
+          <line class="erline" x1="165" y1="325" x2="235" y2="262"/>
+          <text class="ercard" x="171" y="320">1</text>
+          <text class="ercard" x="230" y="270" text-anchor="end">0..*</text>
+          <text class="erverb" x="192" y="286" text-anchor="end">mantém</text>
+
+          <!-- carrinho_item → variante_produto -->
+          <line class="erline" x1="385" y1="235" x2="465" y2="163"/>
+          <text class="ercard" x="391" y="230">0..*</text>
+          <text class="ercard" x="460" y="171" text-anchor="end">1</text>
+          <text class="erverb" x="418" y="216" text-anchor="end">refere</text>
+
+          <!-- usuario → venda -->
+          <line class="erline" x1="165" y1="345" x2="235" y2="408"/>
+          <text class="ercard" x="171" y="341">1</text>
+          <text class="ercard" x="230" y="404" text-anchor="end">0..*</text>
+          <text class="erverb" x="208" y="362">realiza</text>
+
+          <!-- venda → venda_item -->
+          <line class="erline" x1="385" y1="415" x2="465" y2="348"/>
+          <text class="ercard" x="391" y="411">1</text>
+          <text class="ercard" x="460" y="356" text-anchor="end">1..*</text>
+          <text class="erverb" x="435" y="364">contém</text>
+
+          <!-- venda_item → variante_produto -->
+          <line class="erline" x1="540" y1="318" x2="540" y2="167"/>
+          <text class="ercard" x="548" y="313">0..*</text>
+          <text class="ercard" x="548" y="176">1</text>
+          <text class="erverb" x="548" y="248">refere</text>
+
+          <!-- venda → pagamento -->
+          <line class="erline" x1="310" y1="442" x2="310" y2="503"/>
+          <text class="ercard" x="318" y="452">1</text>
+          <text class="ercard" x="318" y="499">0..*</text>
+          <text class="erverb" x="318" y="478">recebe</text>
+
+          <!-- carrinho_item ⇢ venda_item : processo, não chave estrangeira -->
+          <path class="erflow" d="M 330 262 Q 400 322 498 318" marker-end="url(#seta)"/>
+          <text class="erflowlabel" x="404" y="292" text-anchor="middle">cópia no checkout</text>
+
+          <!-- ── caixas ────────────────────────────── -->
+
+          <rect class="erbox" x="15"  y="43"  width="150" height="34" rx="2"/>
+          <text class="erlabel" x="90"  y="65" text-anchor="middle">categoria</text>
+
+          <rect class="erbox" x="235" y="43"  width="150" height="34" rx="2"/>
+          <text class="erlabel" x="310" y="65" text-anchor="middle">produto</text>
+
+          <rect class="erbox" x="465" y="133" width="150" height="34" rx="2"/>
+          <text class="erlabel" x="540" y="155" text-anchor="middle">variante_produto</text>
+
+          <rect class="erbox" x="695" y="43"  width="150" height="34" rx="2"/>
+          <text class="erlabel" x="770" y="65" text-anchor="middle">imagem_variante</text>
+
+          <rect class="erbox" x="695" y="228" width="150" height="34" rx="2"/>
+          <text class="erlabel" x="770" y="250" text-anchor="middle">entrada_estoque</text>
+
+          <rect class="erbox" x="235" y="228" width="150" height="34" rx="2"/>
+          <text class="erlabel" x="310" y="250" text-anchor="middle">carrinho_item</text>
+
+          <rect class="erbox" x="15"  y="318" width="150" height="34" rx="2"/>
+          <text class="erlabel" x="90"  y="340" text-anchor="middle">usuario</text>
+
+          <rect class="erbox" x="465" y="318" width="150" height="34" rx="2"/>
+          <text class="erlabel" x="540" y="340" text-anchor="middle">venda_item</text>
+
+          <rect class="erbox" x="235" y="408" width="150" height="34" rx="2"/>
+          <text class="erlabel" x="310" y="430" text-anchor="middle">venda</text>
+
+          <rect class="erbox" x="235" y="508" width="150" height="34" rx="2"/>
+          <text class="erlabel" x="310" y="530" text-anchor="middle">pagamento</text>
+
+          <rect class="erbox-iso" x="695" y="458" width="150" height="34" rx="2"/>
+          <text class="erlabel" x="770" y="480" text-anchor="middle">faixa_frete</text>
+          <text class="ernote" x="770" y="508" text-anchor="middle">sem relacionamento, por decisão</text>
+
+        </svg>
+        <figcaption>
+          <strong>Linha cheia</strong> é relacionamento no esquema, com chave estrangeira.
+          <strong>Seta interrompida</strong> é processo da aplicação, sem chave nenhuma.
+          <br><br>
+          A cadeia do catálogo desce da categoria até a variante; o lado transacional sobe
+          do usuário até ela. <strong>carrinho_item</strong> e <strong>venda_item</strong>
+          são classes associativas: cada uma fica entre dois donos, qualificando a relação
+          com a quantidade — e, no caso do item de venda, com o subtotal congelado.
+          <br><br>
+          O item de venda é <strong>cópia</strong> do item de carrinho, não referência a
+          ele: uma chave estrangeira apontaria para um registro que deixa de existir quando
+          a compra se confirma, e amarraria o pedido a um carrinho que continua sendo
+          alterado. Copiar é o que torna o pedido imutável.
+          <br><br>
+          <strong>faixa_frete</strong> tem traço interrompido porque não se relaciona com
+          nada: o valor do frete também é copiado para a venda no fechamento, de modo que
+          alterar a tabela de faixas não muda pedidos antigos.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="panel" id="unicidade">
+      <h2>Restrições de unicidade</h2>
+      <div class="scroller">
+        <table class="ref">
+          <thead><tr><th>Relação</th><th>Colunas</th><th>Finalidade</th></tr></thead>
+          <tbody>
+            <tr><td>usuario</td><td>cpf</td><td class="why">Chave de negócio: a regra exige CPF para comprar</td></tr>
+            <tr><td>usuario</td><td>email</td><td class="why">Credencial de acesso</td></tr>
+            <tr><td>categoria</td><td>nome</td><td class="why">Evita categorias homônimas</td></tr>
+            <tr><td>variante_produto</td><td>sku</td><td class="why">O código operacional identifica uma variante só</td></tr>
+            <tr><td>variante_produto</td><td>produto_id, cor, tamanho</td><td class="why">Impede cadastrar duas vezes a mesma combinação</td></tr>
+            <tr><td>carrinho_item</td><td>usuario_id, variante_produto_id</td><td class="why">A variante não se repete no carrinho — a quantidade é somada</td></tr>
+            <tr><td>venda_item</td><td>venda_id, variante_produto_id</td><td class="why">A variante não se repete no pedido</td></tr>
+            <tr><td>pagamento</td><td>id_externo</td><td class="why">Garante que a confirmação reenviada pelo provedor seja processada uma vez só</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" id="regras">
+      <h2>Regras que o esquema não expressa</h2>
+      <p class="sub">
+        O banco não consegue garantir nenhuma destas. São verificações da aplicação, e é
+        onde um erro de implementação não aparece como erro de integridade.
+      </p>
+      <ol class="rules">
+        <li><code>pagamento.qtde_parcelas</code> só pode ser maior que 1 quando <code>metodo = 'credito'</code>. PIX e débito são sempre uma parcela.</li>
+        <li>O número máximo de parcelas é o menor entre 6 e o valor do pedido dividido por R$&nbsp;50,00.</li>
+        <li>As faixas de CEP em <code>faixa_frete</code> não podem se sobrepor — verificado no cadastro, pois não é expressável como restrição de integridade.</li>
+        <li><code>entrada_estoque.qtde</code> admite valor negativo apenas quando <code>motivo = 'ajuste'</code>, caso de correção de contagem.</li>
+        <li>A quantidade disponível de uma variante é <code>qtd_estoque</code> menos a soma das quantidades dos itens de vendas em <code>aguardando_pagamento</code> cuja reserva ainda não expirou.</li>
+        <li><code>venda.reserva_expira_em</code> é preenchida na criação do pedido com quinze minutos à frente; vencido o prazo sem confirmação, a venda passa a <code>expirado</code>.</li>
+        <li>A transição para <code>situacao = 'enviado'</code> exige <code>codigo_rastreio</code> preenchido.</li>
+      </ol>
+    </section>
+
+    <section class="panel" id="indices">
+      <h2>Índices além das chaves e restrições</h2>
+      <div class="scroller">
+        <table class="ref">
+          <thead><tr><th>Índice</th><th>Consulta que o justifica</th></tr></thead>
+          <tbody>
+            <tr><td>venda (usuario_id, created_at)</td><td class="why">Lista de pedidos do cliente, em ordem decrescente de data</td></tr>
+            <tr><td>venda (situacao, reserva_expira_em)</td><td class="why">Rotina que varre reservas vencidas e libera estoque</td></tr>
+            <tr><td>venda_item (variante_produto_id)</td><td class="why">Relatórios de produtos vendidos e de vendas por tamanho</td></tr>
+            <tr><td>produto (categoria_id)</td><td class="why">Navegação do catálogo por categoria</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <span>Igor M. Delmonaco · Felipe T. Rodrigues</span>
+    <span>Consolida as decisões D-01 a D-30</span>
+    <span>Referência de conferência — não substitui os diagramas do documento</span>
+  </footer>
+
+</div>
+</body>
+</html>
