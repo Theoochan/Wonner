@@ -1203,6 +1203,44 @@ liberada, na mesma transação em que o novo pedido é criado e reserva.
 
 ---
 
+## D-32 — Tailwind sem DaisyUI, e sem Node
+**Pendência:** — (decisão de projeto) · **Data:** 2026-08-17
+
+**Contexto:** o NF001 previa Tailwind CSS, DaisyUI e Alpine.js. Com a saída do Laravel
+(D-30), era preciso decidir como o Tailwind entra num projeto sem Node — e reavaliar o
+DaisyUI diante da identidade visual já definida para a marca.
+
+**Decisão:**
+
+1. **DaisyUI sai do NF001.** Fica Tailwind CSS e Alpine.js.
+2. O Tailwind entra pelo **CDN** enquanto as telas são provisórias, e passa ao **executável
+   avulso do Tailwind CLI** na entrega E9 — sem Node, sem `package.json`. As classes
+   escritas no HTML são idênticas nos dois modos, então a troca não altera marcação.
+
+**Alternativas descartadas:**
+
+- *Manter o DaisyUI.* Ele fornece componentes com aparência própria — botões, cartões,
+  formulários —, o que atende quem não tem identidade visual definida. A Wonner tem quatro
+  telas desenhadas, com tipografia e paleta próprias; usar DaisyUI significaria sobrescrever
+  quase tudo que ele oferece, trocando trabalho de escrever por trabalho de desfazer.
+- *Tailwind via npm.* É o caminho padrão e o que o Laravel usava, ao custo de reintroduzir
+  Node, `package.json` e `node_modules` — exatamente o tipo de dependência opaca que D-30
+  se propôs a evitar.
+- *Escrever o CSS à mão, sem Tailwind.* Contrariaria o NF001, que já prometia Tailwind.
+
+**Consequências:**
+
+- Nenhuma dependência de Node no projeto.
+- Enquanto o CDN estiver em uso, há uma dependência de internet para a página aparecer
+  estilizada, e um instante de conteúdo sem estilo no carregamento. Aceitável em telas de
+  teste, e resolvido na E9.
+- As cores da marca são escritas como valor direto nas classes (`bg-[#0f1e3d]`) até a E9,
+  quando ganham nome no arquivo de tema.
+- As quatro famílias tipográficas da identidade continuam vindo do Google Fonts, fora do
+  Tailwind.
+
+---
+
 ## Fora de escopo
 
 Recursos avaliados e deliberadamente não incluídos. Estar aqui é uma escolha defendida,
@@ -1232,6 +1270,7 @@ não tem X?" de virar uma falha.
 | "Avise-me quando chegar" em variante esgotada | Exigiria entidade de notificação de reposição e disparo na entrada de estoque. (D-11) |
 | Tela de detalhe do pedido para o cliente | A lista com estado e código de rastreio cobre a necessidade. (D-11) |
 | Log de auditoria das ações do administrador | Apenas as datas das transições de estado são registradas. (D-12) |
+| DaisyUI | Biblioteca de componentes com aparência própria, que seria sobrescrita pela identidade visual da marca. (D-32) |
 
 _Não confundir com a **fase 3** (D-10, D-15): itens desta tabela não serão feitos; os da
 fase 3 são requisitos de prioridade "Desejável", reconhecidos e postergados._

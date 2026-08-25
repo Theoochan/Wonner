@@ -327,8 +327,8 @@ prioridade: Importante.
 O sistema deve proporcionar interfaces estilizadas de acordo com o design da empresa,
 responsivas e intuitivas ao usuário.
 
-As tecnologias utilizadas para cumprir este requisito serão: TailWind CSS e DaisyUI
-para estilização eficiente, e AlpineJs para reatividade.
+As tecnologias utilizadas para cumprir este requisito serão: Tailwind CSS para
+estilização e Alpine.js para reatividade.
 
 #### 1.4.2.2 [NF002] Banco de dados
 

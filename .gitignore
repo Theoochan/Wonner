@@ -1,18 +1,12 @@
-/vendor
-/config/config.php
-/public/uploads/*
-!/public/uploads/.gitkeep
-/logs/*
-!/logs/.gitkeep
+# Tem a senha do banco
+/incluir/config.php
+
+# Imagens enviadas pelo admin
+/publico/uploads/*
+!/publico/uploads/.gitkeep
 
 .DS_Store
 Thumbs.db
-npm-debug.log
-yarn-error.log
 
 /.idea
 /.vscode
-/.zed
-/.fleet
-/.nova
-.phpactor.json

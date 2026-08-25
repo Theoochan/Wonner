@@ -1,0 +1,19 @@
+# Configuração do Apache para esta pasta.
+# Não é PHP — o Apache lê este arquivo a cada requisição.
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Se o endereço pedido é um arquivo (-f) ou uma pasta (-d) que
+    # existe de verdade, o Apache entrega direto e para aqui.
+    # É o que faz /css/estilo.css funcionar sem passar pelo PHP.
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Todo o resto vai para o index.php, que decide qual página abrir.
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# Sem isto, abrir /css/ mostraria a lista de arquivos da pasta.
+Options -Indexes
