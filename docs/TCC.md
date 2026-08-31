@@ -26,7 +26,7 @@ Felipe T. Rodrigues
 
 ## Estado do documento
 
-Decisões aplicadas: `D-01` a `D-30` (ver [DECISOES.md](DECISOES.md)).
+Decisões aplicadas: `D-01` a `D-33` (ver [DECISOES.md](DECISOES.md)).
 
 | Seção | Situação |
 |---|---|
@@ -37,8 +37,8 @@ Decisões aplicadas: `D-01` a `D-30` (ver [DECISOES.md](DECISOES.md)).
 | 2.4 Modelo relacional | ✅ Especificada · imagem a substituir (`DG-01`) |
 | 3 Interfaces | ❌ Só o título — nada escrito |
 | 4.1 Protótipo | ❌ Nada escrito |
-| 4.2 Script DDL | ✅ Escrito · **não executado** contra um MySQL ainda |
-| 4.3 Script DML | ❌ Nada escrito — é também a carga de demonstração |
+| 4.2 Script DDL | ✅ Escrito e executado · 12 tabelas |
+| 4.3 Script DML | ✅ Escrito · carga de demonstração |
 | 4.4 Consultas dos relatórios | ❌ Nada escrito — cinco consultas (ver D-17) |
 | 5 Referências | ❌ Citações usadas no texto (Visure Solutions, Castro 2016, Brito 2010, Clemente 2024, Ramos 2013, Braz Junior 2007, Araújo 2008) mas a lista não existe |
 
@@ -255,7 +255,7 @@ ele deve ser exibido junto ao estado do pedido.
 prioridade: Essencial.
 
 O sistema deve permitir ao administrador cadastrar, salvar, alterar, cancelar, excluir e
-pesquisar os cadastros de categoria, produto, variante de produto, imagens de variante,
+pesquisar os cadastros de categoria, cor, produto, variante de produto, imagens de produto,
 faixas de frete e usuários, conforme as funções descritas na seção 1.4.3.
 
 #### 1.4.1.13 [RF013] Processar pedido
@@ -402,16 +402,25 @@ inerentes ao funcionamento do estabelecimento.
 2. **Categoria:** `@*código`, `*nome`, `*descrição`
 3. **Produto:** `@*código`, `*nome`, `*descrição`, `*@codCategoria`, `modelagem`,
    `*valor`, `composição`, `cuidados`, `envioDevolucao`
-4. **Variante Produto:** `@*código`, `*#sku`, `*cor`, `*tamanho`, `*situacao`,
-   `*qtdEstoque`
-5. **Imagem da Variante:** `@*código`, `*@codVarianteProd`, `*arquivo`, `*ordem`
-6. **Faixa de Frete:** `@*código`, `*cepInicial`, `*cepFinal`, `*valor`, `*prazoDias`
+4. **Cor:** `@*código`, `*nome`, `*hex`, `hexSecundario`
+5. **Variante Produto:** `@*código`, `*@codProduto`, `*@codCor`, `*#sku`, `*tamanho`,
+   `*situacao`, `*qtdEstoque`
+6. **Imagem do Produto:** `@*código`, `*@codProduto`, `*@codCor`, `*arquivo`, `*ordem`
+7. **Faixa de Frete:** `@*código`, `*cepInicial`, `*cepFinal`, `*valor`, `*prazoDias`
 
 A **categoria** classifica o tipo de peça (Camisetas, Moletons, Acessórios) e é exclusiva:
 um produto pertence a uma categoria, e uma categoria reúne vários produtos. A
 **modelagem** descreve o corte da peça (regular, oversized, cropped) e é independente da
 categoria, podendo repetir-se entre categorias distintas — razão pela qual não constitui
 subcategoria. Não há hierarquia de categorias.
+
+A **cor** é cadastro próprio, e não atributo textual da variante, por dois motivos. Ela é
+compartilhada: a variante identifica a peça pela combinação de cor e tamanho, enquanto a
+imagem ilustra o produto naquela cor, independentemente do tamanho — sem uma entidade
+comum, a mesma cor precisaria ser escrita nas duas tabelas, sem garantia de que
+coincidissem. E ela carrega o próprio código hexadecimal, usado para desenhar a amostra
+visual na página do produto; o atributo `hexSecundario` atende às peças bicolores, como a
+jaqueta em creme e navy.
 
 
 #### B) MOVIMENTAÇÕES
@@ -638,8 +647,9 @@ omitidos do diagrama de classes por serem infraestrutura, não regra de negócio
 | **Usuario** | `nome : String` · `cpf : String` · `telefone : String` · `email : String` · `senha : String` · `cep : String` · `endereco : String` · `numero : String` · `complemento : String` · `cidade : String` · `uf : String` · `papel : Papel` · `situacao : SituacaoUsuario` · `consentimentoEm : DateTime` · `versaoTermos : String` |
 | **Categoria** | `nome : String` · `descricao : String` |
 | **Produto** | `nome : String` · `descricao : String` · `modelagem : Modelagem` · `valor : Decimal` · `composicao : String` · `cuidados : String` · `envioDevolucao : String` |
-| **VarianteProduto** | `sku : String` · `cor : String` · `tamanho : Tamanho` · `qtdEstoque : int` · `situacao : SituacaoVariante` |
-| **ImagemVariante** | `arquivo : String` · `ordem : int` |
+| **VarianteProduto** | `sku : String` · `tamanho : Tamanho` · `qtdEstoque : int` · `situacao : SituacaoVariante` |
+| **Cor** | `nome : String` · `hex : String` · `hexSecundario : String` |
+| **ImagemProduto** | `arquivo : String` · `ordem : int` |
 | **FaixaFrete** | `cepInicial : String` · `cepFinal : String` · `valor : Decimal` · `prazoDias : int` |
 | **CarrinhoItem** | `qtde : int` |
 | **Venda** | `situacao : SituacaoVenda` · `valorFrete : Decimal` · `destinatario : String` · `cep : String` · `endereco : String` · `numero : String` · `complemento : String` · `cidade : String` · `uf : String` · `reservaExpiraEm : DateTime` · `codigoRastreio : String` · `dataEnvio : DateTime` |
@@ -675,9 +685,10 @@ de negócio.
 |---|---|
 | Usuario | `autenticar()`, `redefinirSenha()`, `anonimizar()` |
 | Categoria | — |
-| Produto | `precoFormatado()` |
+| Cor | `amostra()` |
+| Produto | `precoFormatado()`, `coresDisponiveis()` |
 | VarianteProduto | `disponivel()`, `quantidadeDisponivel()`, `baixarEstoque()`, `reporEstoque()` |
-| ImagemVariante | — |
+| ImagemProduto | — |
 | FaixaFrete | `calcularPara(cep)` |
 | CarrinhoItem | `incluir()`, `alterarQuantidade()`, `remover()` |
 | Venda | `abrirCheckout()`, `calcularTotal()`, `reservarEstoque()`, `liberarReserva()`, `avancarSituacao()`, `registrarEnvio()`, `cancelar()`, `devolver()` |
@@ -691,7 +702,9 @@ Multiplicidades:
 |---|---|---|
 | Categoria | 1 ── 0..* | Produto |
 | Produto | 1 ── 1..* | VarianteProduto |
-| VarianteProduto | 1 ── 0..* | ImagemVariante |
+| Produto | 1 ── 0..* | ImagemProduto |
+| Cor | 1 ── 0..* | VarianteProduto |
+| Cor | 1 ── 0..* | ImagemProduto |
 | VarianteProduto | 1 ── 0..* | EntradaEstoque |
 | Usuario | 1 ── 0..* | CarrinhoItem |
 | Usuario | 1 ── 0..* | Venda |
@@ -699,6 +712,10 @@ Multiplicidades:
 | Venda | 1 ── 0..* | Pagamento |
 | VarianteProduto | 1 ── 0..* | CarrinhoItem |
 | VarianteProduto | 1 ── 0..* | VendaItem |
+
+A galeria pertence ao Produto qualificada pela Cor, e não à VarianteProduto: a fotografia
+registra a peça naquela cor, e é a mesma para todos os tamanhos. Prendê-la à variante
+obrigaria a repetir o mesmo arquivo em cada tamanho.
 
 A multiplicidade `1..*` entre Produto e VarianteProduto expressa que um produto sem
 variante não é vendável. Já Categoria admite `0..*` produtos, de modo que uma categoria
@@ -762,6 +779,14 @@ erDiagram
         datetime created_at
         datetime updated_at
     }
+    cor {
+        int id PK
+        varchar nome UK
+        char hex "7 caracteres"
+        char hex_secundario "nulo, para cor bicolor"
+        datetime created_at
+        datetime updated_at
+    }
     produto {
         int id PK
         int categoria_id FK
@@ -778,17 +803,18 @@ erDiagram
     variante_produto {
         int id PK
         int produto_id FK
+        int cor_id FK
         varchar sku UK
-        varchar cor
         enum tamanho "PP|P|M|G|GG|XG|U"
         int qtd_estoque
         enum situacao "ativo|inativo"
         datetime created_at
         datetime updated_at
     }
-    imagem_variante {
+    imagem_produto {
         int id PK
-        int variante_produto_id FK
+        int produto_id FK
+        int cor_id FK
         varchar arquivo
         tinyint ordem
         datetime created_at
@@ -862,7 +888,9 @@ erDiagram
 
     categoria         ||--o{ produto          : classifica
     produto           ||--|{ variante_produto : possui
-    variante_produto  ||--o{ imagem_variante  : ilustra
+    produto           ||--o{ imagem_produto   : ilustra
+    cor               ||--o{ variante_produto : define
+    cor               ||--o{ imagem_produto   : agrupa
     variante_produto  ||--o{ carrinho_item    : compoe
     variante_produto  ||--o{ venda_item       : compoe
     variante_produto  ||--o{ entrada_estoque  : movimenta
@@ -879,8 +907,10 @@ erDiagram
 | usuario | `cpf` | chave de negócio: a regra exige CPF para comprar |
 | usuario | `email` | credencial de acesso |
 | categoria | `nome` | evita categorias homônimas |
+| cor | `nome` | evita cores homônimas |
 | variante_produto | `sku` | o código operacional identifica uma variante só |
-| variante_produto | (`produto_id`, `cor`, `tamanho`) | impede duplicar a mesma combinação |
+| variante_produto | (`produto_id`, `cor_id`, `tamanho`) | impede duplicar a mesma combinação |
+| imagem_produto | (`produto_id`, `cor_id`, `ordem`) | ordem sem empate dentro da galeria de uma cor |
 | carrinho_item | (`usuario_id`, `variante_produto_id`) | a variante não se repete no carrinho |
 | venda_item | (`venda_id`, `variante_produto_id`) | a variante não se repete no pedido |
 | pagamento | `id_externo` | garante o processamento único da confirmação |
@@ -962,7 +992,7 @@ chave estrangeira referencie uma tabela já existente.
 
 O comportamento das chaves estrangeiras segue a regra da seção 1.4.3, segundo a qual a
 exclusão só é permitida a registros sem relacionamento: adota-se `RESTRICT` como padrão. A
-exceção são `imagem_variante` e `carrinho_item`, cujos registros não têm existência própria
+exceção são `imagem_produto` e `carrinho_item`, cujos registros não têm existência própria
 apartada de quem os possui, e por isso acompanham a exclusão do registro-pai.
 
 ```sql
@@ -985,6 +1015,20 @@ CREATE TABLE categoria (
                              ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE KEY uk_categoria_nome (nome)
+) ENGINE = InnoDB;
+
+CREATE TABLE cor (
+    id              INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    nome            VARCHAR(45)  NOT NULL,
+    hex             CHAR(7)      NOT NULL,
+    hex_secundario  CHAR(7)      NULL,
+    created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                 ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_cor_nome (nome),
+    CONSTRAINT ck_cor_hex CHECK (hex LIKE '#%'),
+    CONSTRAINT ck_cor_hex_secundario CHECK (hex_secundario IS NULL OR hex_secundario LIKE '#%')
 ) ENGINE = InnoDB;
 
 CREATE TABLE usuario (
@@ -1036,8 +1080,8 @@ CREATE TABLE produto (
 CREATE TABLE variante_produto (
     id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
     produto_id   INT UNSIGNED NOT NULL,
+    cor_id       INT UNSIGNED NOT NULL,
     sku          VARCHAR(30)  NOT NULL,
-    cor          VARCHAR(45)  NOT NULL,
     tamanho      ENUM('PP', 'P', 'M', 'G', 'GG', 'XG', 'U') NOT NULL,
     qtd_estoque  INT          NOT NULL DEFAULT 0,
     situacao     ENUM('ativo', 'inativo')                   NOT NULL DEFAULT 'ativo',
@@ -1046,26 +1090,35 @@ CREATE TABLE variante_produto (
                               ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE KEY uk_variante_sku (sku),
-    UNIQUE KEY uk_variante_combinacao (produto_id, cor, tamanho),
+    UNIQUE KEY uk_variante_combinacao (produto_id, cor_id, tamanho),
+    KEY idx_variante_cor (cor_id),
     CONSTRAINT fk_variante_produto
         FOREIGN KEY (produto_id) REFERENCES produto (id)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_variante_cor
+        FOREIGN KEY (cor_id) REFERENCES cor (id)
         ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT ck_variante_estoque CHECK (qtd_estoque >= 0)
 ) ENGINE = InnoDB;
 
-CREATE TABLE imagem_variante (
-    id                   INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    variante_produto_id  INT UNSIGNED NOT NULL,
-    arquivo              VARCHAR(255) NOT NULL,
-    ordem                TINYINT UNSIGNED NOT NULL DEFAULT 1,
-    created_at           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
-                                      ON UPDATE CURRENT_TIMESTAMP,
+CREATE TABLE imagem_produto (
+    id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    produto_id  INT UNSIGNED NOT NULL,
+    cor_id      INT UNSIGNED NOT NULL,
+    arquivo     VARCHAR(255) NOT NULL,
+    ordem       TINYINT UNSIGNED NOT NULL DEFAULT 1,
+    created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
+                             ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    UNIQUE KEY uk_imagem_ordem (variante_produto_id, ordem),
-    CONSTRAINT fk_imagem_variante
-        FOREIGN KEY (variante_produto_id) REFERENCES variante_produto (id)
-        ON DELETE CASCADE ON UPDATE CASCADE
+    UNIQUE KEY uk_imagem_ordem (produto_id, cor_id, ordem),
+    KEY idx_imagem_cor (cor_id),
+    CONSTRAINT fk_imagem_produto
+        FOREIGN KEY (produto_id) REFERENCES produto (id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_imagem_cor
+        FOREIGN KEY (cor_id) REFERENCES cor (id)
+        ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE = InnoDB;
 
 CREATE TABLE faixa_frete (
@@ -1219,6 +1272,7 @@ meio de restrições `CHECK`, e não depende da aplicação:
 | Quantidade negativa em estoque somente para ajuste | `ck_entrada_qtde` |
 | Rastreio obrigatório para pedido enviado ou entregue | `ck_venda_rastreio` |
 | Faixa de CEP com limite final não inferior ao inicial | `ck_faixa_ordem` |
+| Código de cor em formato hexadecimal | `ck_cor_hex`, `ck_cor_hex_secundario` |
 | Valores monetários não negativos | `ck_produto_valor`, `ck_venda_frete`, `ck_venda_item_subtotal`, `ck_pagamento_valor`, `ck_faixa_valor` |
 | Estoque não negativo | `ck_variante_estoque` |
 | Quantidades positivas em carrinho e item de venda | `ck_carrinho_qtde`, `ck_venda_item_qtde` |

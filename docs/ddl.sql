@@ -9,7 +9,7 @@
 --
 -- Uso:  mysql -u root -p < docs/ddl.sql
 --
--- Para recriar o esquema do zero, remova o comentário das linhas abaixo.
+-- Para recriar o esquema do zero, remova o comentário da linha abaixo.
 -- ATENÇÃO: isso apaga todos os dados.
 --
 -- DROP DATABASE IF EXISTS wonner;
@@ -34,6 +34,20 @@ CREATE TABLE categoria (
                              ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE KEY uk_categoria_nome (nome)
+) ENGINE = InnoDB;
+
+CREATE TABLE cor (
+    id              INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    nome            VARCHAR(45)  NOT NULL,
+    hex             CHAR(7)      NOT NULL,
+    hex_secundario  CHAR(7)      NULL,
+    created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                 ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_cor_nome (nome),
+    CONSTRAINT ck_cor_hex CHECK (hex LIKE '#%'),
+    CONSTRAINT ck_cor_hex_secundario CHECK (hex_secundario IS NULL OR hex_secundario LIKE '#%')
 ) ENGINE = InnoDB;
 
 CREATE TABLE usuario (
@@ -85,8 +99,8 @@ CREATE TABLE produto (
 CREATE TABLE variante_produto (
     id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
     produto_id   INT UNSIGNED NOT NULL,
+    cor_id       INT UNSIGNED NOT NULL,
     sku          VARCHAR(30)  NOT NULL,
-    cor          VARCHAR(45)  NOT NULL,
     tamanho      ENUM('PP', 'P', 'M', 'G', 'GG', 'XG', 'U') NOT NULL,
     qtd_estoque  INT          NOT NULL DEFAULT 0,
     situacao     ENUM('ativo', 'inativo')                   NOT NULL DEFAULT 'ativo',
@@ -95,26 +109,35 @@ CREATE TABLE variante_produto (
                               ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE KEY uk_variante_sku (sku),
-    UNIQUE KEY uk_variante_combinacao (produto_id, cor, tamanho),
+    UNIQUE KEY uk_variante_combinacao (produto_id, cor_id, tamanho),
+    KEY idx_variante_cor (cor_id),
     CONSTRAINT fk_variante_produto
         FOREIGN KEY (produto_id) REFERENCES produto (id)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_variante_cor
+        FOREIGN KEY (cor_id) REFERENCES cor (id)
         ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT ck_variante_estoque CHECK (qtd_estoque >= 0)
 ) ENGINE = InnoDB;
 
-CREATE TABLE imagem_variante (
-    id                   INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    variante_produto_id  INT UNSIGNED NOT NULL,
-    arquivo              VARCHAR(255) NOT NULL,
-    ordem                TINYINT UNSIGNED NOT NULL DEFAULT 1,
-    created_at           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
-                                      ON UPDATE CURRENT_TIMESTAMP,
+CREATE TABLE imagem_produto (
+    id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    produto_id  INT UNSIGNED NOT NULL,
+    cor_id      INT UNSIGNED NOT NULL,
+    arquivo     VARCHAR(255) NOT NULL,
+    ordem       TINYINT UNSIGNED NOT NULL DEFAULT 1,
+    created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
+                             ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    UNIQUE KEY uk_imagem_ordem (variante_produto_id, ordem),
-    CONSTRAINT fk_imagem_variante
-        FOREIGN KEY (variante_produto_id) REFERENCES variante_produto (id)
-        ON DELETE CASCADE ON UPDATE CASCADE
+    UNIQUE KEY uk_imagem_ordem (produto_id, cor_id, ordem),
+    KEY idx_imagem_cor (cor_id),
+    CONSTRAINT fk_imagem_produto
+        FOREIGN KEY (produto_id) REFERENCES produto (id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_imagem_cor
+        FOREIGN KEY (cor_id) REFERENCES cor (id)
+        ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE = InnoDB;
 
 CREATE TABLE faixa_frete (

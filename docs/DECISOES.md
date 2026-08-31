@@ -277,7 +277,7 @@ abaixo como incorporados.
 |---|---|
 | Telefone do cliente | atributo de Usuário — o entregador precisa |
 | SKU da variante | atributo de Variante Produto — código legível no admin e nos relatórios |
-| Galeria de imagens | várias imagens **por variante**, ordenadas (fecha MD-02) |
+| Galeria de imagens | várias imagens por variante, ordenadas (fecha MD-02) — **revisto por D-33: a imagem passa a pertencer ao produto, qualificada pela cor** |
 | Composição, cuidados, envio & devolução | campos de texto do Produto |
 | Janela de reserva de 15 minutos | o design já exibia o cronômetro; fixa o prazo de D-01 |
 
@@ -1238,6 +1238,56 @@ DaisyUI diante da identidade visual já definida para a marca.
   quando ganham nome no arquivo de tema.
 - As quatro famílias tipográficas da identidade continuam vindo do Google Fonts, fora do
   Tailwind.
+
+---
+
+## D-33 — Cor é entidade, e a imagem pertence ao produto
+**Pendência:** — (revisão de D-08) · **Data:** 2026-08-17 · **Revoga parcialmente:** D-08
+
+**Contexto:** D-08 prendeu a galeria à variante. Ao escrever a carga de dados (E1), a
+consequência ficou visível: como variante é produto + cor + tamanho, as quatro variantes
+do moletom navy — P, M, G e GG — apontavam para o **mesmo arquivo**, gerando quatro linhas
+para uma única fotografia. A foto depende da cor, não do tamanho.
+
+Ao avaliar a correção, apareceu um segundo problema com a mesma raiz: a página do produto
+prevista no design exibe a cor como **amostra visual**, e o código hexadecimal dessa
+amostra não teria onde morar sem se repetir em cada tamanho — a mesma duplicação, num
+lugar pior.
+
+**Decisão:**
+
+1. **`cor` passa a ser entidade própria**, com `nome`, `hex` e `hex_secundario`.
+   `variante_produto.cor` (texto) vira `cor_id` com chave estrangeira.
+2. **`imagem_variante` passa a `imagem_produto`**, referenciando produto **e** cor. A
+   unicidade passa a ser (`produto_id`, `cor_id`, `ordem`).
+3. `hex_secundario` é anulável e atende às peças bicolores — caso da jaqueta em
+   creme e navy —, cuja amostra é desenhada dividida.
+
+**Alternativas descartadas:**
+
+- *Manter a imagem na variante.* Não quebra nada em funcionamento, mas mantém o modelo
+  afirmando algo falso — que a fotografia depende do tamanho — e obrigaria o administrador
+  a associar a mesma foto a quatro variantes na tela da E7.
+- *Mover a imagem para o produto, com a cor como coluna de texto.* Evita a entidade nova, e
+  o risco de divergência entre os dois textos seria contornado por um campo de seleção
+  alimentado pelas cores já existentes. Foi descartada porque não resolve o segundo
+  problema: sem entidade, o código hexadecimal da amostra não tem onde ficar.
+- *Mover a imagem para o produto, sem cor alguma.* O moletom navy e o creme exibiriam a
+  mesma fotografia — pior que o defeito original.
+
+**Consequências:**
+
+- O esquema passa de 11 para **12 tabelas**, com 12 chaves estrangeiras e 14 restrições
+  `CHECK`.
+- Na carga de dados, as imagens caem de 30 linhas para 10.
+- A página do produto pode exibir a amostra de cor de verdade, e a galeria troca de
+  fotografias ao selecionar a cor, sem recarregar a página.
+- A tela de imagens da E7 fica mais simples: o administrador escolhe produto e cor, e sobe
+  a foto **uma** vez.
+- O cadastro de cor entra no RF012. Como as cores mudam raramente, a tela pode ser mínima.
+- **O momento foi escolhido:** a mudança ocorreu antes de existir qualquer dado, quando
+  custa reescrever dois arquivos. Depois da E2 custaria também as consultas da vitrine, e
+  depois da E7 a tela de upload.
 
 ---
 
